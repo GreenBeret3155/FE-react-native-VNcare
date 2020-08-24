@@ -1,6 +1,9 @@
-import React from 'react'
-import { TouchableOpacity, View, Text, StyleSheet ,ScrollView } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { TouchableOpacity, View, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
+import { getQuanHeByTaikhoanId } from '../services/fetchAPI'
+import { chuyenLoaiQuanHe } from '../services/xuly'
+
 
 const MyDiv = (props) => {
     const styles = {
@@ -8,10 +11,10 @@ const MyDiv = (props) => {
             height: 120,
             alignSelf: 'stretch',
             alignContent: 'center',
-            backgroundColor: '#b6d7a8',
+            backgroundColor: '#ffd500',
             borderRadius: 5,
             borderWidth: 1,
-            borderColor: '#b6d7a8',
+            borderColor: '#ffd500',
             marginTop: 10,
             justifyContent: 'center',
         },
@@ -38,17 +41,35 @@ const MyDiv = (props) => {
     )
 }
 
+const DangkykhamScreen = ({ navigation }) => {
+    const [data, setData] = useState([]);
+    const [isLoading, setLoading] = useState(true);
 
-
-const DangkykhamScreen = ({navigation}) => {
+    chuyenLoaiQuanHe();
+    useEffect(() => {
+        getQuanHeByTaikhoanId(1)
+            .then((json) => setData(json))
+            .catch((error) => console.error(error))
+            .finally(() => setLoading(false));
+    }, []);
     return (
-        <View style={{ flex:1, padding: 10 }}>
-            <ScrollView>
-            <Text style={{ color: 'blue', fontWeight: 'bold', fontSize: 18 }}> Bạn đang đặt lịch khám cho ai ?</Text>
-            <MyDiv >Nguyễn Quang Liêm</MyDiv>
-            <MyDiv onPress={() =>{navigation.navigate("ThemlichkhamScreen")}} >Nguyễn Thanh Chính - Con trai</MyDiv>
+        <View style={styles.container}>
+            <Text style={ styles.headerText }> Bạn đang đặt lịch khám cho ai ?</Text>
+            {isLoading ? <ActivityIndicator /> :
+                <FlatList
+                    data={data}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <MyDiv
+                            onPress={() => navigation.navigate('ThongtindangkykhamScreen', { benhnhanid: item.benhnhanphu.id, loaiquanhe: item.loaiquanhe })}
+                        >
+                            {item.benhnhanphu.ten}  - {chuyenLoaiQuanHe(item.loaiquanhe)}
+                        </MyDiv>
+                    )}
+                />
+            }
             <View style={{ alignItems: 'flex-end', marginTop: 20 }}>
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => navigation.navigate('ThongtindangkykhamScreen')} >
                     <View style={{ flexDirection: 'row' }} >
                         <Text style={{
                             fontWeight: 'bold',
@@ -62,10 +83,22 @@ const DangkykhamScreen = ({navigation}) => {
                     </View>
                 </TouchableOpacity>
             </View>
-            </ScrollView>
         </View>
 
     )
 }
+
+const styles = StyleSheet.create({
+    container:{
+        flex: 1, 
+        padding: 10,
+        backgroundColor:'white'
+    },
+    headerText:{ 
+        color: '#0183fd', 
+        fontWeight: 'bold', 
+        fontSize: 18 
+    }
+})
 
 export default DangkykhamScreen;

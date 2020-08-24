@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, View, Text, StyleSheet, ScrollView, Picker } from 'react-native'
-import MyButton from '../components/MyButton'
-import MyTextInput from '../components/MyTextInput'
-import { AntDesign } from '@expo/vector-icons';
-import Svg, { Line } from 'react-native-svg';
+import { TouchableOpacity, View, Text, StyleSheet, ScrollView, Picker, ActivityIndicator } from 'react-native'
+import { MyButton, MyTextInput } from '../components'
+import { AntDesign } from '@expo/vector-icons'
+import Svg, { Line } from 'react-native-svg'
+import { getBenhNhanByBenhnhanId } from '../services/fetchAPI'
+import { chuyenGioiTinh } from '../services/xuly'
+import { useEffect } from 'react'
 
 
 
@@ -54,102 +56,115 @@ const MyDiv = (props) => {
 
 
 
-const ThemlichkhamScreen = () => {
+const ThemlichkhamScreen = ({ route, navigation }) => {
     const [selectedValue, setSelectedValue] = useState("java");
+    const [data, setData] = useState();
+    const [isLoading, setIsLoading] = useState(true);
+    const { benhnhanid } = route.params;
+    const { loaiquanhe } = route.params;
+
+    useEffect(() => {
+        getBenhNhanByBenhnhanId(benhnhanid)
+            .then((json) => setData(json))
+            .catch((error) => console.error(error))
+            .finally(() => setIsLoading(false));
+    }, []);
     return (
         <View style={{ flex: 1, padding: 10 }}>
             <ScrollView>
-                <MyTextInput style={{ marginTop: 10, marginBottom: 10 }} placeholder='Con trai' >
-                    <Text>Mối quan hệ</Text>
-                </MyTextInput>
-                <View style={styles.container3}>
-                    <Text style={{ fontWeight: "bold" }}>Thông tin cá nhân</Text>
-                    <Svg height="35" width="500" >
-                        <Line x1="40" y1="10" x2="300" y2="10" stroke="gray" strokeWidth="1" />
-                    </Svg>
-                </View>
-                <View style={styles.container3}>
-                    <Textsao >Họ và tên</Textsao>
-                    <Text>Nguyễn Thanh Chính</Text>
-                </View>
-                <View style={styles.container3}>
-                    <View style={styles.container3}>
-                        <Textsao >Ngày sinh</Textsao>
-                        <Text >04/04/2019</Text>
+                {isLoading ? <ActivityIndicator /> :
+                    <View>
+                        <MyTextInput style={{ marginTop: 10, marginBottom: 10 }} placeholder='Con trai' >
+                            <Text>Mối quan hệ</Text>
+                        </MyTextInput>
+                        <View style={styles.container}>
+                            <Text style={{ fontWeight: "bold" }}>Thông tin cá nhân</Text>
+                            <Svg height="35" width="500" >
+                                <Line x1="40" y1="10" x2="300" y2="10" stroke="gray" strokeWidth="1" />
+                            </Svg>
+                        </View>
+                        <View style={styles.container}>
+                            <Textsao >Họ và tên</Textsao>
+                            <Text>{data.ten}</Text>
+                        </View>
+                        <View style={styles.container}>
+                            <View style={styles.container}>
+                                <Textsao >Ngày sinh</Textsao>
+                                <Text >{data.ngaysinh}</Text>
+                            </View>
+
+                            <View style={styles.container}>
+                                <Textsao>Giới tính</Textsao>
+                                <Text> {chuyenGioiTinh(data.gioitinh)}</Text>
+                            </View>
+
+                        </View>
+                        <View style={styles.container}>
+                            <Textsao >Số CMND/Hộ chiếu</Textsao>
+                            <Text>{data.cmnd}</Text>
+                        </View>
+                        <View style={styles.container}>
+                            <View style={{ flex: 1 }}>
+                                <Text>Nơi cấp <Text>{data.noicap}</Text></Text>
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                <Text>Ngày cấp <Text>{data.ngaycap}</Text></Text>
+                            </View>
+
+                        </View>
+                        <MyTextInput placeholder='B120300304' style={{ marginTop: 5, marginBottom: 10 }}>
+                            <Text>Thẻ BHYT</Text>
+                        </MyTextInput>
+
+                        <View style={styles.container}>
+                            <Text style={{ fontWeight: "bold" }}>Thông tin liên lạc</Text>
+                            <Svg height="35" width="500" >
+                                <Line x1="45" y1="10" x2="300" y2="10" stroke="gray" strokeWidth="1" />
+                            </Svg>
+
+                        </View>
+
+                        <View style={styles.box} >
+                            <Textsao style={{ alignSelf: 'center' }}>Tỉnh/Thành phố</Textsao>
+                            <Picker
+                                selectedValue={selectedValue}
+                                style={{ height: 30, width: 240 }}
+                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}>
+                                <Picker.Item label="Đà Nẵng" value="java" />
+                                <Picker.Item label="JavaScript" value="js" />
+                            </Picker>
+                        </View>
+
+                        <View style={styles.box} >
+                            <Textsao style={{ alignSelf: 'center' }}>Quận/Huyện</Textsao>
+                            <Picker
+                                selectedValue={selectedValue}
+                                style={{ height: 30, width: 240 }}
+                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}>
+                                <Picker.Item label="Hải Châu" value="java" />
+                                <Picker.Item label="JavaScript" value="js" />
+                            </Picker>
+                        </View>
+
+                        <View style={styles.box} >
+                            <Textsao style={{ alignSelf: 'center' }}>Phường/Xã</Textsao>
+                            <Picker
+                                selectedValue={selectedValue}
+                                style={{ height: 30, width: 240 }}
+                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}>
+                                <Picker.Item label="Hòa Cường Bắc" value="java" />
+                                <Picker.Item label="JavaScript" value="js" />
+                            </Picker>
+                        </View>
+
+                        <MyTextInput
+                            placeholder='344 Đường 2/9'
+                            style={{ marginTop: 5, marginBottom: 10 }}>
+                            <Textsao>Số nhà</Textsao>
+                        </MyTextInput>
+                        <MyDiv style={{ marginTop: 30 }}>Thêm</MyDiv>
                     </View>
-
-
-                    <View style={styles.container3}>
-                        <Textsao>Giới tính</Textsao>
-                        <Text >Nam</Text>
-                    </View>
-
-                </View>
-                <View style={styles.container3}>
-                    <Textsao >Số CMND/Hộ chiếu</Textsao>
-                    <Text>201123456</Text>
-                </View>
-                <View style={styles.container3}>
-                    <View style={{ flex: 1 }}>
-                        <Text>Nơi cấp</Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                        <Text>Ngày cấp</Text>
-                    </View>
-
-                </View>
-                <MyTextInput placeholder='B120300304' style={{ marginTop: 5, marginBottom: 10 }}>
-                    <Text>Thẻ BHYT</Text>
-                </MyTextInput>
-
-                <View style={styles.container3}>
-                    <Text style={{ fontWeight: "bold" }}>Thông tin liên lạc</Text>
-                    <Svg height="35" width="500" >
-                        <Line x1="45" y1="10" x2="300" y2="10" stroke="gray" strokeWidth="1" />
-                    </Svg>
-                   
-                </View>
-
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-                    <Textsao style={{ alignSelf: 'center' }}>Tỉnh/Thành phố</Textsao>
-                    <Picker
-                        selectedValue={selectedValue}
-                        style={{ height: 30, width: 240 }}
-                        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-                    >
-                        <Picker.Item label="Đà Nẵng" value="java" />
-                        <Picker.Item label="JavaScript" value="js" />
-                    </Picker>
-                </View>
-
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-                    <Textsao style={{ alignSelf: 'center' }}>Quận/Huyện</Textsao>
-                    <Picker
-                        selectedValue={selectedValue}
-                        style={{ height: 30, width: 240 }}
-                        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-                    >
-                        <Picker.Item label="Hải Châu" value="java" />
-                        <Picker.Item label="JavaScript" value="js" />
-                    </Picker>
-                </View>
-
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-                    <Textsao style={{ alignSelf: 'center' }}>Phường/Xã</Textsao>
-                    <Picker
-                        selectedValue={selectedValue}
-                        style={{ height: 30, width: 240 }}
-                        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-                    >
-                        <Picker.Item label="Hòa Cường Bắc" value="java" />
-                        <Picker.Item label="JavaScript" value="js" />
-                    </Picker>
-                </View>
-
-                <MyTextInput placeholder='344 Đường 2/9' style={{ marginTop: 5, marginBottom: 10 }}>
-                    <Textsao>Số nhà</Textsao>
-                </MyTextInput>
-                <MyDiv style={{ marginTop: 30 }}>Thêm</MyDiv>
+                }
             </ScrollView>
         </View>
     )
@@ -157,11 +172,15 @@ const ThemlichkhamScreen = () => {
 }
 
 const styles = StyleSheet.create({
-    container3: {
+    container: {
         flex: 1,
         flexDirection: 'row',
         height: 35,
     },
+    box: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    }
 })
 
 export default ThemlichkhamScreen;

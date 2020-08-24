@@ -37,7 +37,7 @@ class FirstRoute extends React.Component {
                         borderWidth: 0.5,
                         borderColor: "gray",
                         borderRadius: 5,
-                        padding:10
+                        padding: 10
                     }}
                     options={{
                         style: { paddingTop: 5 },
@@ -85,11 +85,13 @@ export default function HosoScreen() {
                     renderLabel={({ route, focused, color }) => {
                         let color1;
                         color1 = focused ? 'white' : '#cbcbcb';
-                        return (<View style={{ flex: 1, backgroundColor: color1, borderRadius: 10, borderColor:'#cbcbcb', borderWidth:0.5 }}>
-                            <Text style={{ backgroundColor: color1, color: 'black', margin: 8, fontSize: 12 }}>
-                                {route.title}
-                            </Text>
-                        </View>)
+                        return (
+                            <View style={{ flex: 1, backgroundColor: color1, borderRadius: 10, borderColor: '#cbcbcb', borderWidth: 0.5 }}>
+                                <Text style={{ backgroundColor:"transparent", color: 'black', margin: 8, fontSize: 12 }}>
+                                    {route.title}
+                                </Text>
+                            </View>
+                        )
                     }}
                     pressColor='white'
                     indicatorStyle={{ backgroundColor: 'white', width: 0, height: 0, elevation: 0, }}
@@ -115,12 +117,12 @@ const styles = StyleSheet.create({
     },
     scene: {
         flex: 1,
-        backgroundColor:'#fff',
-        borderColor:'#cbcbcb',
-        borderTopWidth:0.5,
+        backgroundColor: '#fff',
+        borderColor: '#cbcbcb',
+        borderTopWidth: 0.5,
     },
     bar: {
-        backgroundColor: "#fff",
+        backgroundColor: '#3bccbb',
         height: 30,
         elevation: 0,
     },

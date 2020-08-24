@@ -15,7 +15,7 @@ const MyButton = (props) => {
 
 const styles = {
     button: {
-        height: 35,
+        
         alignSelf: 'stretch',
         alignContent: 'center',
         backgroundColor: '#2e3094',
@@ -29,7 +29,7 @@ const styles = {
     textButton: {
         alignSelf: 'center',
         color: '#fff',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: '700',
         padding: 10,
         justifyContent: 'space-between',

@@ -1,30 +1,32 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Button, Linking, Image, StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import RegistryScreen from './src/screens/RegistryScreen';
-import HomeScreen from './src/screens/HomeScreen'
-import SuccessScreen from './src/screens/SuccessScreen';
-import LoginScreen from './src/screens/LoginScreen';
-import DangkykhamScreen from './src/screens/DangkykhamScreen'
-import HosoScreen from './src/screens/HosoScreen'
-import SettingsScreen from './src/screens/SettingsScreen'
-import ThemlichkhamScreen from './src/screens/ThemlichkhamScreen'
-import QmkScreen from './src/screens/QmkScreen'
+import { 
+    RegistryScreen, 
+    HomeScreen, 
+    SuccessScreen, 
+    LoginScreen, 
+    DangkykhamScreen, 
+    HosoScreen, 
+    SettingsScreen,
+    ThemlichkhamScreen, 
+    QmkScreen, 
+    ThongtindangkykhamScreen,
+    KiemtrathongtinScreen
+} from './src/screens'
+import { Loading } from './src/components';
 import { AntDesign } from '@expo/vector-icons';
-
-import firebase from 'firebase'
-import Loading from './src/components/Loading';
-
-
+import { firebase } from './src/firebase/config'
+import { color } from 'react-native-reanimated';
 
 
 const RootStack = createStackNavigator();
-const LoginStack = createStackNavigator();
+// const LoginStack = createStackNavigator();
 const MainStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -40,64 +42,29 @@ const styleHeader = {
     },
 }
 
-const MyDiv = (props) => {
-    const styles = {
-        button: {
-            height: 35,
-            alignSelf: 'stretch',
-            alignContent: 'center',
-            backgroundColor: '#2e3094',
-            borderRadius: 5,
-            borderWidth: 1,
-            borderColor: '#2e3094',
-            justifyContent: 'center',
-            marginLeft: 5,
-            marginRight: 5
-        },
-        divStyle: {
-            flexDirection: 'row',
-            padding: 5
-        },
-        text: {
-            color: '#fff',
-            fontSize: 14,
-            fontWeight: '700',
-        }
-    }
-    return (
-        <View style={props.style}>
-            <TouchableOpacity onPress={props.onPress} style={[styles.button, props.stylenut]}>
-                <View style={styles.divStyle}>
-                    <View style={{ flex: 1 }} />
-                    <Text style={[styles.text, props.styletext]}>{props.children}</Text>
-                    <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
-                        <AntDesign name="right" size={14} color="#000" />
-                    </View>
-                </View>
-            </TouchableOpacity>
-        </View>
-    )
-}
-
 const HomeStack = createStackNavigator();
 
 const HomeTab = () => {
     return (
-        <HomeStack.Navigator initialRouteName='HomeScreen' >
-            <HomeStack.Screen name='HomeScreen'
-                component={HomeScreen}
-                options={{
-                    title: 'Trang chủ',
-                    headerLeft: null,
+        <HomeStack.Navigator initialRouteName='HomeScreen' 
+            screenOptions = {{
+                headerLeft: null,
                     headerStyle: {
-                        backgroundColor: '#fff',
+                        backgroundColor: '#3bccbb',
+                        height:120,
                         elevation: 0,
                     },
                     headerTitleAlign: 'center',
                     headerTitleStyle: {
                         fontWeight: '600',
+                        color: '#fff',
                     },
-                    // headerShown: false,
+            }}
+        >
+            <HomeStack.Screen name='HomeScreen'
+                component={HomeScreen}
+                options={{
+                    title: 'Trang chủ',
                 }} />
         </HomeStack.Navigator>
     )
@@ -107,37 +74,71 @@ const DKKStack = createStackNavigator();
 
 const DangkykhamTab = ({ navigation }) => {
     return (
-        <DKKStack.Navigator initialRouteName='DangkykhamScreen' >
+        <DKKStack.Navigator initialRouteName='DangkykhamScreen'
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#3bccbb',
+                    height: 120,
+                    elevation: 0,
+                },
+                headerTitleAlign: 'center',
+                headerTitleStyle: {
+                    fontWeight: '600',
+                    color: '#fff',
+                },
+                headerBackImage: () => {
+                    return (
+                        <AntDesign
+                            name="left"
+                            size={20}
+                            color="#fff"
+                            style={{ paddingLeft: 10 }}
+                        />)
+                },
+            }}
+        >
             <DKKStack.Screen name='DangkykhamScreen'
                 component={DangkykhamScreen}
                 options={{
                     title: 'Đối tượng đăng ký khám',
-                    headerStyle: {
-                        backgroundColor: '#fff',
-                        elevation: 0,
-                    },
-                    headerTitleAlign: 'center',
-                    headerTitleStyle: {
-                        fontWeight: '600',
-                    },
                 }} />
             <DKKStack.Screen name='ThemlichkhamScreen'
                 component={ThemlichkhamScreen}
                 options={{
                     title: 'Thêm lịch khám',
-                    headerStyle: {
-                        backgroundColor: '#fff',
-                    },
-                    headerTitleAlign: 'center',
-                    headerTitleStyle: {
-                        fontWeight: '600',
-                    },
                     headerRight: () => {
-                        return (<MyDiv stylenut={{ backgroundColor: '#e6959b', borderColor: '#e6959b', }}
-                            styletext={{ color: 'black', marginRight: 10 }}
-                            onPress={() => navigation.push('DangkykhamScreen')}>Hủy</MyDiv>)
+                        return (
+                            <TouchableOpacity style={{ marginRight: 20 }}>
+                                <Text style={{ fontSize: 14, color: '#fff' }} onPress={() => navigation.push('DangkykhamScreen')}>Hủy</Text>
+                            </TouchableOpacity>
+                        )
                     }
                 }} />
+            <DKKStack.Screen name='ThongtindangkykhamScreen'
+                component={ThongtindangkykhamScreen}
+                options={{
+                    title: 'Thông tin đăng ký khám',
+                    headerRight: () => {
+                        return (
+                            <TouchableOpacity style={{ marginRight: 20 }}>
+                                <Text style={{ fontSize: 14, color: '#fff' }} onPress={() => navigation.push('DangkykhamScreen')}>Hủy</Text>
+                            </TouchableOpacity>
+                        )
+                    }
+                }} />
+            <DKKStack.Screen name='KiemtrathongtinScreen'
+                component={KiemtrathongtinScreen}
+                options={{
+                    title: 'Thông tin bệnh nhân',
+                    headerRight: () => {
+                        return (
+                            <TouchableOpacity style={{ marginRight: 20 }}>
+                                <Text style={{ fontSize: 14, color: '#fff' }} onPress={() => navigation.push('DangkykhamScreen')}>Hủy</Text>
+                            </TouchableOpacity>
+                        )
+                    }
+                }} />
+
         </DKKStack.Navigator>
     )
 }
@@ -152,12 +153,13 @@ const HosoTab = () => {
                 options={{
                     title: 'Hồ sơ sức khỏe',
                     headerStyle: {
-                        backgroundColor: '#fff',
+                        backgroundColor: '#3bccbb',
                         elevation: 0,
                     },
                     headerTitleAlign: 'center',
                     headerTitleStyle: {
                         fontWeight: '600',
+                        color: '#fff',
                     },
                 }} />
         </HosoStack.Navigator>
@@ -175,12 +177,13 @@ const SettingsTab = () => {
                     title: 'Cài đặt',
                     headerLeft: null,
                     headerStyle: {
-                        backgroundColor: '#fff',
+                        backgroundColor: '#3bccbb',
                         elevation: 0,
                     },
                     headerTitleAlign: 'center',
                     headerTitleStyle: {
                         fontWeight: '600',
+                        color: '#fff',
                     },
                 }} />
         </SettingsStack.Navigator>
@@ -222,9 +225,9 @@ const TabsScreen = () => {
                 }
             })}
             tabBarOptions={{
-                activeBackgroundColor: '#b6d7a8',
+                activeBackgroundColor: '#3bccbb',
                 inactiveBackgroundColor: '#fff',
-                activeTintColor: 'black',
+                activeTintColor: '#fff',
                 inactiveTintColor: 'gray',
                 style: {
                     height: 65
@@ -253,92 +256,107 @@ const MainStackScreen = () => {
     )
 }
 
-class App extends React.Component {
-    state = { loggedIn: null };
+function App() {
+    const [user, setUser] = useState(null);
+    const [loggedIn, setLoggedIn] = useState(false)
+    const [loading, setLoading] = useState(true);
 
-    UNSAFE_componentWillMount() {
-        var firebaseConfig = {
-            apiKey: "AIzaSyArXI-E5a6iTP_doKuPLxm4Yaz6389iMUk",
-            authDomain: "auth1-3d411.firebaseapp.com",
-            databaseURL: "https://auth1-3d411.firebaseio.com",
-            projectId: "auth1-3d411",
-            storageBucket: "auth1-3d411.appspot.com",
-            messagingSenderId: "495596778773",
-            appId: "1:495596778773:web:4afe17225103c90e4d251c",
-            measurementId: "G-ZEC4BLPK32"
-        };
-        // Initialize Firebase
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
-        firebase.auth().onAuthStateChanged((user) => {
+    useEffect(() => {
+        const usersRef = firebase.firestore().collection('users');
+        firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                this.setState({ loggedIn: true });
+                usersRef
+                    .doc(user.uid)
+                    .get()
+                    .then(document => {
+                        const userData = document.data()
+                        setUser(userData)
+                        setLoading(false)
+                    })
+                    .catch(error => setLoading(false))
+                setLoggedIn(true);
             } else {
-                this.setState({ loggedIn: false });
+                setLoading(false);
+                setUser(null);
+                setLoggedIn(false);
             }
         })
+    }, []);
+
+    if (loading) {
+        return (
+            <Loading size="large" />
+        )
     }
-    renderContent() {
-        const { navigation } = this.props
-        switch (this.state.loggedIn) {
-            case true:
-                return (
-                    <NavigationContainer>
-                        <RootStack.Navigator initialRouteName="Main" >
-                            <RootStack.Screen
-                                name="Main"
-                                component={MainStackScreen}
-                                options={{ headerShown: false }}
-                            />
-                        </RootStack.Navigator>
-                    </NavigationContainer>
-                );
-            case false:
-                return (
-                    <NavigationContainer>
-                        <LoginStack.Navigator initialRouteName="Login" screenOptions={styleHeader} >
-                            <LoginStack.Screen name="Login"
+
+    return (
+        <NavigationContainer>
+            <RootStack.Navigator>
+                {loggedIn ? (
+                    <RootStack.Screen
+                        name="Main"
+                        options={{ headerShown: false }}
+                        component={MainStackScreen}
+                    />
+                    // {/* {props => <MainStackScreen {...props} user={user} />} */}
+                    // {/* </RootStack.Screen> */}
+
+                ) : (
+                        <>
+                            <RootStack.Screen name="Login"
                                 component={LoginScreen}
                                 options={{
                                     title: 'Login page',
                                     headerShown: false,
-                                }} />
-                            <LoginStack.Screen name="Registry"
+                                }}
+                            />
+                            <RootStack.Screen name="Registry"
                                 component={RegistryScreen}
                                 options={{
                                     title: 'Thông tin tài khoản',
-                                    // headerLeft: null,
-                                    // headerRight: () => <Button style={{color: '#fff'}} onPress={() => navigation.goBack()}  title='Hủy đăng ký' />
-                                }} />
-                            <LoginStack.Screen name="SuccessScreen"
+                                    headerStyle: {
+                                        backgroundColor: '#fff',
+                                        height: 150,
+                                        elevation: 0,
+                                    },
+                                    headerTitleAlign: 'center',
+                                    headerTitleStyle: {
+                                        fontWeight: '600',
+                                        color: '#000',
+                                    },
+                                    headerBackImage: () => {
+                                        return (
+                                            <AntDesign
+                                                name="left"
+                                                size={20}
+                                                color="#000"
+                                                style={{ paddingLeft: 10 }}
+                                            />)
+                                    },
+                                }}
+                            />
+                            <RootStack.Screen name="SuccessScreen"
                                 component={SuccessScreen}
                                 options={{
-                                    headerShown: false
-                                }} />
-                            <LoginStack.Screen name="QmkScreen"
+                                    headerShown: false,
+                                    headerStyle: {
+                                        backgroundColor: '#3bccbb',
+                                        elevation: 0,
+                                    },
+                                }}
+                            />
+                            <RootStack.Screen name="QmkScreen"
                                 component={QmkScreen}
                                 options={{
                                     title: 'Quên mật khẩu'
-                                }} />
-                        </LoginStack.Navigator>
-                    </NavigationContainer>
-                );
-            default:
-                return <Loading size="large" />;
-        }
-    }
+                                }}
+                            />
+                        </>
+                    )}
 
-
-    render() {
-        return (
-            <View style={{ flex: 1 }}>
-                {this.renderContent()}
-            </View>
-        )
-    }
+            </RootStack.Navigator>
+        </NavigationContainer>
+    )
 }
 
 
