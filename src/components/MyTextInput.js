@@ -6,7 +6,7 @@ const MyTextInput = (props) => {
         <View style={props.style}>
             <View style={styles.div} >
                 <View style={styles.children} >{props.children}</View>
-                <TextInput style={styles.inputbox} placeholder={' '+props.placeholder} placeholderTextColor="gray"></TextInput>
+                <TextInput style={styles.inputbox} placeholder={props.placeholder} placeholderTextColor="gray" underlineColorAndroid="transparent" keyboardShouldPersistTaps='always' />
             </View>
         </View>
     )
@@ -26,6 +26,7 @@ const styles = {
         borderColor: 'gray',
         borderWidth: 1,
         borderRadius: 3,
+        
     },
     children: {
         flex: 2,
