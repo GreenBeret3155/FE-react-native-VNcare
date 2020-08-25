@@ -24,6 +24,10 @@ import { AntDesign } from '@expo/vector-icons';
 import { firebase } from './src/firebase/config'
 import { color } from 'react-native-reanimated';
 
+//redux
+import { createStore} from 'redux'
+import { Provider } from 'react-redux'
+
 
 const RootStack = createStackNavigator();
 // const LoginStack = createStackNavigator();

@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet } from 'react-native'
-import { MyButton } from '../components'
-import anh from '../../assets/imgs/check.png'
+import { MyButton } from '../../components'
+import anh from '../../../assets/imgs/check.png'
 
 const SuccessScreen = ({ navigation }) => {
     return (

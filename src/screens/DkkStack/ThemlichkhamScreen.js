@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, View, Text, StyleSheet, ScrollView, Picker, ActivityIndicator } from 'react-native'
-import { MyButton, MyTextInput } from '../components'
+import { MyButton, MyTextInput } from '../../components'
 import { AntDesign } from '@expo/vector-icons'
 import Svg, { Line } from 'react-native-svg'
-import { getBenhNhanByBenhnhanId } from '../services/fetchAPI'
-import { chuyenGioiTinh } from '../services/xuly'
+import { getBenhNhanByBenhnhanId } from '../../services/fetchGET'
+import { chuyenGioiTinh } from '../../services/xuly'
 import { useEffect } from 'react'
 
 
@@ -66,7 +66,6 @@ const ThemlichkhamScreen = ({ route, navigation }) => {
     useEffect(() => {
         getBenhNhanByBenhnhanId(benhnhanid)
             .then((json) => setData(json))
-            .catch((error) => console.error(error))
             .finally(() => setIsLoading(false));
     }, []);
     return (

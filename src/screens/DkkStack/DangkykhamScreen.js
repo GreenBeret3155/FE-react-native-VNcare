@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { TouchableOpacity, View, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator } from 'react-native'
+import { TouchableOpacity, View, Text, StyleSheet, ScrollView, Modal, FlatList, ActivityIndicator } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
-import { getQuanHeByTaikhoanId } from '../services/fetchAPI'
-import { chuyenLoaiQuanHe } from '../services/xuly'
+import { getQuanHeByBenhNhanId } from '../../services/fetchGET'
+import { chuyenLoaiQuanHe } from '../../services/xuly'
 
 
 const MyDiv = (props) => {
@@ -43,31 +43,44 @@ const MyDiv = (props) => {
 
 const DangkykhamScreen = ({ navigation }) => {
     const [data, setData] = useState([]);
-    const [isLoading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
 
     chuyenLoaiQuanHe();
     useEffect(() => {
-        getQuanHeByTaikhoanId(1)
+        getQuanHeByBenhNhanId(1)
             .then((json) => setData(json))
-            .catch((error) => console.error(error))
             .finally(() => setLoading(false));
     }, []);
     return (
         <View style={styles.container}>
-            <Text style={ styles.headerText }> Bạn đang đặt lịch khám cho ai ?</Text>
-            {isLoading ? <ActivityIndicator /> :
-                <FlatList
-                    data={data}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => (
-                        <MyDiv
-                            onPress={() => navigation.navigate('ThongtindangkykhamScreen', { benhnhanid: item.benhnhanphu.id, loaiquanhe: item.loaiquanhe })}
-                        >
-                            {item.benhnhanphu.ten}  - {chuyenLoaiQuanHe(item.loaiquanhe)}
-                        </MyDiv>
-                    )}
-                />
-            }
+            <Text style={styles.headerText}> Bạn đang đặt lịch khám cho ai ?</Text>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={loading}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                }}
+            >
+                <View style={styles.modalBox}>
+                    <View style={styles.modal}>
+                        <Text style={styles.modalText}> đang thực hiện</Text>
+                        <ActivityIndicator color='white' />
+                    </View>
+                </View>
+            </Modal>
+            <FlatList
+                data={data}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                    <MyDiv
+                        onPress={() => navigation.navigate('ThongtindangkykhamScreen', { benhnhanid: item.benhnhanphu.id, loaiquanhe: item.loaiquanhe })}
+                    >
+                        {item.benhnhanphu.ten}  - {chuyenLoaiQuanHe(item.loaiquanhe)}
+                    </MyDiv>
+                )}
+            />
+
             <View style={{ alignItems: 'flex-end', marginTop: 20 }}>
                 <TouchableOpacity onPress={() => navigation.navigate('ThongtindangkykhamScreen')} >
                     <View style={{ flexDirection: 'row' }} >
@@ -89,15 +102,41 @@ const DangkykhamScreen = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex: 1, 
+    container: {
+        flex: 1,
         padding: 10,
-        backgroundColor:'white'
+        backgroundColor: 'white'
     },
-    headerText:{ 
-        color: '#0183fd', 
-        fontWeight: 'bold', 
-        fontSize: 18 
+    modalBox: {
+        flex: 1,
+        justifyContent: "flex-start",
+        alignItems: "center",
+    },
+    modal: {
+        height: 35,
+        width: 200,
+        padding: 10,
+        backgroundColor: "#0183fd",
+        borderRadius: 10,
+        alignItems: "center",
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    modalText: {
+        color: 'white'
+    },
+    headerText: {
+        color: '#0183fd',
+        fontWeight: 'bold',
+        fontSize: 18
     }
 })
 

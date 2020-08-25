@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, Button } from 'react-native'
-import { firebase } from '../firebase/config'
+import { firebase } from '../../firebase/config'
 
 class SettingsScreen extends React.Component {
     render() {

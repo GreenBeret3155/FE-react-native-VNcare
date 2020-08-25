@@ -1,14 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Alert, Button, Linking, CheckBox, Image, StyleSheet, Text, View, TouchableOpacity, Modal, ScrollView, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Loading, MyTextInput } from '../components'
+import { Loading, MyTextInput } from '../../components'
 import { TextInput } from 'react-native-gesture-handler'
-import { firebase } from '../firebase/config';
+import { firebase } from '../../firebase/config';
 import { Octicons } from '@expo/vector-icons';
-
-import anhlogo from '../../assets/imgs/vnpt.png';
-import { useState } from 'react';
 
 const MyButton = (props) => {
     return (
@@ -95,7 +92,7 @@ function LoginScreen({ navigation }) {
                     visible={loading}
                     onRequestClose={() => {
                         Alert.alert("Modal has been closed.");
-                    }}
+                    }} 
                 >
                     <View style={styles.modalBox}>
                         <View style={styles.modal}>
@@ -104,11 +101,13 @@ function LoginScreen({ navigation }) {
                         </View>
                     </View>
                 </Modal>
-                <Image source={anhlogo} style={{ width: 250, height: 250, }} />
+                <Image source={require('../../../assets/imgs/vncare2.jpg')} style={{ width: 250, height: 250, }} />
                 <Text style={styles.headerText}> Đăng nhập </Text>
                 <View>
-                    <View style={[styles.inputBox,
-                    b1 ? { borderColor: '#3bccbb', borderBottomWidth: 2 } : { borderColor: 'gray', borderBottomWidth: 0.5 }]}>
+                    <View style={[
+                        styles.inputBox,
+                        {borderColor: b1 ? '#3bccbb' : 'gray' , borderBottomWidth: b1 ?  2  : 0.5 }
+                        ]}>
                         <TextInput style={{ fontSize: 16, width: 350 }}
                             value={email}
                             onChangeText={text => setEmail(text)}
@@ -126,8 +125,10 @@ function LoginScreen({ navigation }) {
                             blurOnSubmit={false}>
                         </TextInput>
                     </View>
-                    <View style={[styles.inputBox,
-                    b2 ? { borderColor: '#3bccbb', borderBottomWidth: 2 } : { borderColor: 'gray', borderBottomWidth: 0.5 }]}>
+                    <View style={[
+                        styles.inputBox,
+                        {borderColor: b2 ? '#3bccbb' : 'gray' , borderBottomWidth: b2 ?  2  : 0.5 }
+                        ]}>
                         <TextInput style={{ flex: 13, fontSize: 16, width: 300 }}
                             value={password}
                             onChangeText={text => setPassword(text)}

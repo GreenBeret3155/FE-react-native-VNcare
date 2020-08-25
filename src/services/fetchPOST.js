@@ -1,4 +1,6 @@
-const globalUrl = 'http://0c2c0a3927d3.ngrok.io/api'
+import config from './config.js'
+
+const {globalUrl} = config
 
 export const createDangKykham = (tgdk,tgkham,noidungkham,loaikhamid,benhnhanid,bacsiid) => {
     const URL = `${globalUrl}/dangkykham/benhnhan/${benhnhanid}/bacsi/${bacsiid}`;

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Alert, Text, View, CheckBox, Image, Modal, StyleSheet, ScrollView, TextInput, ActivityIndicator, } from 'react-native'
-import { Loading } from '../components'
-import { firebase } from '../firebase/config'
+import { firebase } from '../../firebase/config'
 import { useState } from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Entypo } from '@expo/vector-icons';
