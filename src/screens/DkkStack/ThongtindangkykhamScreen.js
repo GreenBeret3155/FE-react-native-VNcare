@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Picker, StyleSheet, ActivityIndicator, Modal } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, Modal } from 'react-native'
+import { Picker } from '@react-native-community/picker';
 import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler'
-import { getAllTinh, getCosoyteByTinhId, getKhoaByCosoyteId, getBacSiByKhoaId } from '../services/fetchAPI'
-import { loaiKham } from '../services/mockedData'
+import { getAllTinh, getCosoyteByTinhId, getKhoaByCosoyteId, getBacSiByKhoaId } from '../../services/fetchGET'
+import { loaiKham } from '../../services/mockedData'
 import { AntDesign } from '@expo/vector-icons';
 import Svg, { Line } from 'react-native-svg'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const ThongtindangkykhamScreen = ({route, navigation}) => {
+const ThongtindangkykhamScreen = ({ route, navigation }) => {
     const [value1, setValue1] = useState()
     const [value2, setValue2] = useState()
     const [value3, setValue3] = useState()
@@ -23,6 +24,9 @@ const ThongtindangkykhamScreen = ({route, navigation}) => {
     const [BSid, setBSid] = useState(1)
     const [loaikhamid, setLoaikhamid] = useState(1)
     const [loading, setLoading] = useState(true)
+    const [initTinh, setInitTinh] = useState(false)
+    const [initCS, setInitCS] = useState(false)
+    const [initKhoa, setInitKhoa] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const [date, setDate] = useState(new Date(1598051730000));
     const [mode, setMode] = useState('date');
@@ -55,33 +59,29 @@ const ThongtindangkykhamScreen = ({route, navigation}) => {
     useEffect(() => {
         getAllTinh()
             .then((json) => setDataTinh(json))
-            .catch((error) => console.error(error))
             .finally(() => setLoading(false));
     }, [])
 
     useEffect(() => {
         getCosoyteByTinhId(tinhid)
             .then((json) => setDataCS(json))
-            .catch((error) => console.error(error))
             .finally(() => setLoading(false));
     }, [tinhid])
 
     useEffect(() => {
         getKhoaByCosoyteId(CSid)
             .then((json) => setDataKhoa(json))
-            .catch((error) => console.error(error))
             .finally(() => setLoading(false));
     }, [CSid])
 
     useEffect(() => {
         getBacSiByKhoaId(khoaid)
             .then((json) => setDataBS(json))
-            .catch((error) => console.error(error))
             .finally(() => setLoading(false));
     }, [khoaid])
 
     const onPressDatLich = () => {
-        navigation.navigate('KiemtrathongtinScreen', {date:date,noidungkham:textValue,loaikhamid:loaikhamid,tinhid: tinhid, CSid: CSid, khoaid: khoaid, BSid , benhnhanid: benhnhanid, loaiquanhe: loaiquanhe})
+        navigation.navigate('KiemtrathongtinScreen', { date: date, noidungkham: textValue, loaikhamid: loaikhamid, tinhid: tinhid, CSid: CSid, khoaid: khoaid, BSid: BSid, benhnhanid: benhnhanid, loaiquanhe: loaiquanhe })
     }
 
     return (
@@ -97,7 +97,8 @@ const ThongtindangkykhamScreen = ({route, navigation}) => {
                 >
                     <View style={styles.modalBox}>
                         <View style={styles.modal}>
-                            <ActivityIndicator color = 'white' />
+                            <Text style = {styles.modalText}> đang thực hiện</Text>
+                            <ActivityIndicator color='white' />
                         </View>
                     </View>
                 </Modal>
@@ -111,7 +112,10 @@ const ThongtindangkykhamScreen = ({route, navigation}) => {
                         onValueChange={(itemValue, itemIndex) => {
                             setTinhid(itemValue)
                             setLoading(true)
-                            }}>
+                            setInitTinh(true)
+                            console.log("156")
+                        }}
+                    >
                         {dataTinh.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
@@ -122,10 +126,17 @@ const ThongtindangkykhamScreen = ({route, navigation}) => {
                         mode="dropdown"
                         selectedValue={CSid}
                         style={styles.picker}
-                        onValueChange={(itemValue, itemIndex) =>{ 
-                            setCSid(itemValue) 
-                            setLoading(true)}}>
-                        {dataCS.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
+                        enabled={initTinh}
+                        onValueChange={(itemValue, itemIndex) => {
+                            setLoading(true)
+                            setCSid(itemValue)
+                            setInitCS(true)
+                            console.log("132")
+                        }}
+                    >
+                        {initTinh ?
+                            dataCS.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />)) :
+                            null}
                     </Picker>
                 </View>
 
@@ -136,8 +147,9 @@ const ThongtindangkykhamScreen = ({route, navigation}) => {
                         selectedValue={khoaid}
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) => {
-                            setKhoaid(itemValue) 
-                            setLoading(true)}}>
+                            setKhoaid(itemValue)
+                            setLoading(true)
+                        }}>
                         {dataKhoa.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
@@ -149,7 +161,8 @@ const ThongtindangkykhamScreen = ({route, navigation}) => {
                         selectedValue={BSid}
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) => {
-                            setBSid(itemValue) }}>
+                            setBSid(itemValue)
+                        }}>
                         {dataBS.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
@@ -212,9 +225,9 @@ const ThongtindangkykhamScreen = ({route, navigation}) => {
                 </View>
 
                 <View style={styles.buttonBox}>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.button}
-                        onPress = {onPressDatLich}
+                        onPress={onPressDatLich}
                     >
                         <Text style={styles.buttonText}>
                             ĐẶT LỊCH
@@ -227,25 +240,27 @@ const ThongtindangkykhamScreen = ({route, navigation}) => {
 }
 
 const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            justifyContent: 'center',
-            alignContent: 'center',
-            backgroundColor: 'white',
-            padding: 10
-        },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignContent: 'center',
+        backgroundColor: 'white',
+        padding: 10
+    },
     modalBox: {
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
     },
     modal: {
-        height:40,
-        width:50,
-        padding:10,
+        height: 35,
+        width: 200,
+        padding: 10,
         backgroundColor: "#0183fd",
         borderRadius: 10,
         alignItems: "center",
+        flexDirection:'row',
+        justifyContent:'space-around',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -254,6 +269,9 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5
+    },
+    modalText:{
+        color:'white'
     },
     headerText: {
         fontSize: 18,
