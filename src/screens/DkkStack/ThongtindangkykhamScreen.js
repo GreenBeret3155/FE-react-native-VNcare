@@ -2,18 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator, Modal } from 'react-native'
 import { Picker } from '@react-native-community/picker';
 import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler'
-import { getAllTinh, getCosoyteByTinhId, getKhoaByCosoyteId, getBacSiByKhoaId } from '../../services/fetchGET'
+import { getAllTinh, getCosoyteByTinhId, getKhoaByCosoyteId, getBacSiByKhoaId ,getBenhNhanByBenhnhanId} from '../../services/fetchGET'
 import { loaiKham } from '../../services/mockedData'
 import { AntDesign } from '@expo/vector-icons';
 import Svg, { Line } from 'react-native-svg'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const ThongtindangkykhamScreen = ({ route, navigation }) => {
-    const [value1, setValue1] = useState()
-    const [value2, setValue2] = useState()
-    const [value3, setValue3] = useState()
-    const [value4, setValue4] = useState()
-    const [value5, setValue5] = useState()
     const [dataTinh, setDataTinh] = useState([])
     const [dataCS, setDataCS] = useState([])
     const [dataKhoa, setDataKhoa] = useState([])
@@ -113,7 +108,6 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                             setTinhid(itemValue)
                             setLoading(true)
                             setInitTinh(true)
-                            console.log("156")
                         }}
                     >
                         {dataTinh.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
@@ -131,7 +125,6 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                             setLoading(true)
                             setCSid(itemValue)
                             setInitCS(true)
-                            console.log("132")
                         }}
                     >
                         {initTinh ?
