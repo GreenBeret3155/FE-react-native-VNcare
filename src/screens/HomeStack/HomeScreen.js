@@ -7,6 +7,7 @@ const Tab = createBottomTabNavigator();
 function HomeScreen({ navigation }) {
     return (
         <View style={styles.container} >
+            <Image source={require('../../../assets/imgs/search-icon.png')} style={{height:250 , width: 250}} />
             <Text>Home</Text>
 
         </View>
@@ -18,6 +19,7 @@ function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:'white',
         alignItems:'center',
         justifyContent: 'center'
     }
