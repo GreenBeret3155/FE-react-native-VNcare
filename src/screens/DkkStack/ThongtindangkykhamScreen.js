@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, ActivityIndicator, Modal } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, Modal, Alert } from 'react-native'
 import { Picker } from '@react-native-community/picker';
 import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler'
-import { getAllTinh, getCosoyteByTinhId, getKhoaByCosoyteId, getBacSiByKhoaId ,getBenhNhanByBenhnhanId} from '../../services/fetchGET'
+import { getAllTinh, getCosoyteByTinhId, getKhoaByCosoyteId, getBacSiByKhoaId, getBenhNhanByBenhnhanId } from '../../services/fetchGET'
 import { loaiKham } from '../../services/mockedData'
 import { AntDesign } from '@expo/vector-icons';
 import Svg, { Line } from 'react-native-svg'
@@ -13,21 +13,17 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
     const [dataCS, setDataCS] = useState([])
     const [dataKhoa, setDataKhoa] = useState([])
     const [dataBS, setDataBS] = useState([])
-    const [tinhid, setTinhid] = useState(1)
-    const [CSid, setCSid] = useState(1)
-    const [khoaid, setKhoaid] = useState(1)
-    const [BSid, setBSid] = useState(1)
+    const [tinhid, setTinhid] = useState(0)
+    const [CSid, setCSid] = useState(0)
+    const [khoaid, setKhoaid] = useState(0)
+    const [BSid, setBSid] = useState(0)
     const [loaikhamid, setLoaikhamid] = useState(1)
     const [loading, setLoading] = useState(true)
-    const [initTinh, setInitTinh] = useState(false)
-    const [initCS, setInitCS] = useState(false)
-    const [initKhoa, setInitKhoa] = useState(false)
-    const [modalVisible, setModalVisible] = useState(false)
     const [date, setDate] = useState(new Date(1598051730000));
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [textValue, setTextValue] = useState('');
-    const [textLength, setTextLength] = useState();
+    const [textLength, setTextLength] = useState(0);
 
     const { benhnhanid } = route.params;
     const { loaiquanhe } = route.params;
@@ -51,32 +47,66 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
         showMode('time');
     };
 
+    const zeroIdObj = { "id": 0, "ten": '' }
+
     useEffect(() => {
+        setDataTinh([{ "id": 0, "ten": '-- Chọn tỉnh --' }])
         getAllTinh()
+            .then((json) => [{ "id": 0, "ten": '-- Chọn tỉnh --' }, ...json])
             .then((json) => setDataTinh(json))
             .finally(() => setLoading(false));
     }, [])
 
     useEffect(() => {
-        getCosoyteByTinhId(tinhid)
-            .then((json) => setDataCS(json))
-            .finally(() => setLoading(false));
+        if (tinhid != 0) setLoading(true)
+        setCSid(0)
+        setDataCS([{ "id": 0, "ten": '-- Chọn cơ sở y tế --' }])
+        if (tinhid !== 0) {
+            getCosoyteByTinhId(tinhid)
+                .then((json) => [{ "id": 0, "ten": '-- Chọn cơ sở y tế --' }, ...json])
+                .then((json) => setDataCS(json))
+                .finally(() => setLoading(false))
+        }
     }, [tinhid])
 
     useEffect(() => {
-        getKhoaByCosoyteId(CSid)
-            .then((json) => setDataKhoa(json))
-            .finally(() => setLoading(false));
-    }, [CSid])
+        if (CSid != 0) setLoading(true)
+        setKhoaid(0)
+        setDataKhoa([{ "id": 0, "ten": '-- Chọn khoa khám bệnh --' }])
+        if (CSid !== 0) {
+            getKhoaByCosoyteId(CSid)
+                .then((json) => [{ "id": 0, "ten": '-- Chọn khoa khám bệnh --' }, ...json])
+                .then((json) => setDataKhoa(json))
+                .finally(() => setLoading(false))
+        }
+    }, [tinhid, CSid])
 
     useEffect(() => {
-        getBacSiByKhoaId(khoaid)
-            .then((json) => setDataBS(json))
-            .finally(() => setLoading(false));
-    }, [khoaid])
+        if (khoaid != 0) setLoading(true)
+        setBSid(0)
+        setDataBS([{ "id": 0, "ten": '-- Chọn bác sĩ --' }])
+        if (khoaid !== 0) {
+            getBacSiByKhoaId(khoaid)
+                .then((json) => [{ "id": 0, "ten": '-- Chọn bác sĩ --' }, ...json])
+                .then((json) => setDataBS(json))
+                .finally(() => setLoading(false))
+        }
+    }, [tinhid, CSid, khoaid])
+
 
     const onPressDatLich = () => {
-        navigation.navigate('KiemtrathongtinScreen', { date: date, noidungkham: textValue, loaikhamid: loaikhamid, tinhid: tinhid, CSid: CSid, khoaid: khoaid, BSid: BSid, benhnhanid: benhnhanid, loaiquanhe: loaiquanhe })
+        if (tinhid * CSid * khoaid * BSid === 0) {
+            //alert
+            Alert.alert(
+                "Cảnh báo",
+                "Bạn cần chọn bác sĩ khám",
+                [
+                    {text:"OK"}
+                ]
+            )
+        } else {
+            navigation.navigate('KiemtrathongtinScreen', { date: date, noidungkham: textValue, loaikhamid: loaikhamid, tinhid: tinhid, CSid: CSid, khoaid: khoaid, BSid: BSid, benhnhanid: benhnhanid, loaiquanhe: loaiquanhe })
+        }
     }
 
     return (
@@ -86,13 +116,10 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                     animationType="fade"
                     transparent={true}
                     visible={loading}
-                    onRequestClose={() => {
-                        Alert.alert("Modal has been closed.");
-                    }}
                 >
                     <View style={styles.modalBox}>
                         <View style={styles.modal}>
-                            <Text style = {styles.modalText}> đang thực hiện</Text>
+                            <Text style={styles.modalText}>đang thực hiện</Text>
                             <ActivityIndicator color='white' />
                         </View>
                     </View>
@@ -106,8 +133,6 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) => {
                             setTinhid(itemValue)
-                            setLoading(true)
-                            setInitTinh(true)
                         }}
                     >
                         {dataTinh.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
@@ -120,16 +145,11 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                         mode="dropdown"
                         selectedValue={CSid}
                         style={styles.picker}
-                        enabled={initTinh}
                         onValueChange={(itemValue, itemIndex) => {
-                            setLoading(true)
                             setCSid(itemValue)
-                            setInitCS(true)
                         }}
                     >
-                        {initTinh ?
-                            dataCS.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />)) :
-                            null}
+                        {dataCS.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
 
@@ -141,8 +161,8 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) => {
                             setKhoaid(itemValue)
-                            setLoading(true)
-                        }}>
+                        }}
+                    >
                         {dataKhoa.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
@@ -155,7 +175,8 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) => {
                             setBSid(itemValue)
-                        }}>
+                        }}
+                    >
                         {dataBS.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
@@ -167,7 +188,10 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                         mode="dropdown"
                         selectedValue={loaikhamid}
                         style={styles.picker}
-                        onValueChange={(itemValue, itemIndex) => setLoaikhamid(itemValue)}>
+                        onValueChange={(itemValue, itemIndex) =>
+                            setLoaikhamid(itemValue)
+                        }
+                    >
                         {loaiKham.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
@@ -252,8 +276,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#0183fd",
         borderRadius: 10,
         alignItems: "center",
-        flexDirection:'row',
-        justifyContent:'space-around',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -263,8 +287,8 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5
     },
-    modalText:{
-        color:'white'
+    modalText: {
+        color: 'white'
     },
     headerText: {
         fontSize: 18,
