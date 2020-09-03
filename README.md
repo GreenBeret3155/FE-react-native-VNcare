@@ -1,6 +1,29 @@
 # FE-react-native-VNcare
+## Cài đặt NPM và NodeJS
+- [x] [NodeJS và Node Package Manager (npm) ](https://nodejs.org/en/download/)
+
+## Cài đặt Expo CLI
 ```
-expo init FE-react-native-VNcare
+npm install expo-cli --global
+```
+Ngoài ra bạn còn cần cài đặt Expo Client trên Google Play(Android) và App Store(iOS) hoặc Android Simulator để chạy ứng dụng trên điện thoại nữa nhé
+
+## Cờ-lôn và chạy nó thôi
+**1. Step 1: Clone project**
+```
+git clone https://github.com/GreenBeret3155/FE-react-native-VNcare.git
+```
+hoặc
+truy cập [https://github.com/GreenBeret3155/FE-react-native-VNcare.git](https://github.com/GreenBeret3155/FE-react-native-VNcare.git) để tải file ZIP
+
+**2. Step 2: Khởi chạy**
+Sử dụng cmd để khởi chạy project
+```
 cd FE-react-native-VNcare
 expo start
 ```
+Open Expo Client on your device. Scan the QR code printed by ```expo start``` with Expo Client (Android) or Camera (iOS). You may have to wait a minute while your project bundles and loads for the first time.
+
+**3. Step 3: To be continued...**
+
+Mệt viết tý cho vui thôi. Thằng nào có hứng và thấy thiếu thì viết tiếp nhé.
