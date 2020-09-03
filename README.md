@@ -16,14 +16,22 @@ git clone https://github.com/GreenBeret3155/FE-react-native-VNcare.git
 hoặc
 truy cập [https://github.com/GreenBeret3155/FE-react-native-VNcare.git](https://github.com/GreenBeret3155/FE-react-native-VNcare.git) để tải file ZIP
 
-**2. Step 2: Khởi chạy**
-Sử dụng cmd để khởi chạy project
+**2. Step 2: Nốt-mô-đun và đồng bọn**
+
+Sử dụng cmd để kéo node_modules về
 ```
 cd FE-react-native-VNcare
+npm install
+```
+
+**3. Step 3: Khởi chạy**
+
+Khởi chạy project
+```
 expo start
 ```
 Open Expo Client on your device. Scan the QR code printed by ```expo start``` with Expo Client (Android) or Camera (iOS). You may have to wait a minute while your project bundles and loads for the first time.
 
-**3. Step 3: To be continued...**
+**4. Step 4: To be continued...**
 
-Mệt viết tý cho vui thôi. Thằng nào có hứng và thấy thiếu thì viết tiếp nhé.
+Viết tý cho vui thôi. Thằng nào có hứng và thấy thiếu thì viết tiếp nhé.
