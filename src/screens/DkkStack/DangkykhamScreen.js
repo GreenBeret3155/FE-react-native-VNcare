@@ -1,63 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { TouchableOpacity, View, Text, StyleSheet, ScrollView, Modal, FlatList, ActivityIndicator } from 'react-native'
+import { Image, TouchableOpacity, View, Text, StyleSheet, ScrollView, Modal, FlatList, ActivityIndicator } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
-import { getQuanHeByBenhNhanId } from '../../services/fetchGET'
 import { chuyenLoaiQuanHe } from '../../services/xuly'
+import { connect } from 'react-redux'
+import { fetchBenhnhans, selectBenhnhan } from '../../redux/benhnhan'
 
+const DangkykhamScreen = (props) => {
 
-const MyDiv = (props) => {
-    const styles = {
-        button: {
-            height: 120,
-            alignSelf: 'stretch',
-            alignContent: 'center',
-            backgroundColor: '#ffd500',
-            borderRadius: 5,
-            borderWidth: 1,
-            borderColor: '#ffd500',
-            marginTop: 10,
-            justifyContent: 'center',
-        },
-        divStyle: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-        },
-        textButton: {
-            color: '#000',
-            fontSize: 18,
-            fontWeight: '700',
-            margin: 10,
-        }
-    }
-    return (
-        <View style={props.style}>
-            <TouchableOpacity onPress={props.onPress} style={styles.button}>
-                <View style={styles.divStyle}>
-                    <Text style={styles.textButton}>{props.children}</Text>
-                    <AntDesign name="right" size={24} color="black" style={{ margin: 10, alignSelf: 'center' }} />
-                </View>
-            </TouchableOpacity>
-        </View>
-    )
-}
-
-const DangkykhamScreen = ({ navigation }) => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    chuyenLoaiQuanHe();
     useEffect(() => {
-        getQuanHeByBenhNhanId(1)
-            .then((json) => setData(json))
-            .finally(() => setLoading(false));
+        props.fetchBenhnhans()
     }, []);
+
     return (
         <View style={styles.container}>
             <Text style={styles.headerText}> Bạn đang đặt lịch khám cho ai ?</Text>
             <Modal
                 animationType="fade"
                 transparent={true}
-                visible={loading}
+                visible={props.loading}
                 onRequestClose={() => {
                     Alert.alert("Modal has been closed.");
                 }}
@@ -70,32 +30,73 @@ const DangkykhamScreen = ({ navigation }) => {
                 </View>
             </Modal>
             <FlatList
-                data={data}
+                data={props.benhnhans}
+                style={{ flexGrow: 0 }}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <MyDiv
-                        onPress={() => navigation.navigate('ThongtindangkykhamScreen', { benhnhanid: item.benhnhanphu.id, loaiquanhe: item.loaiquanhe })}
+                    <TouchableOpacity
+                        onPress={() => {
+                            props.selectBenhnhan(item)
+                            props.navigation.navigate('ThongtindangkykhamScreen')
+                        }}
                     >
-                        {item.benhnhanphu.ten}  - {chuyenLoaiQuanHe(item.loaiquanhe)}
-                    </MyDiv>
+                        <View style={styles.barBox} >
+                            <View style={styles.imageBox}>
+                                <Image source={require("../../../assets/imgs/user_icon.png")} style={styles.image} />
+                            </View>
+
+                            <View style={styles.contentBNBox}>
+                                <Text style={{ fontWeight: "600", fontSize: 16 }} >{item.benhnhanphu.ten.toUpperCase()}</Text>
+                                <Text style={{ fontSize: 10, color: "gray" }}>{chuyenLoaiQuanHe(item.loaiquanhe)}</Text>
+                            </View>
+
+                            <View style={styles.rightIconBox}>
+                                <AntDesign name="right" size={15} color="gray" style={{ alignSelf: 'center' }} />
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 )}
             />
+            <Text style={styles.headerText}> Đăng ký mới</Text>
 
-            <View style={{ alignItems: 'flex-end', marginTop: 20 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('ThongtindangkykhamScreen')} >
-                    <View style={{ flexDirection: 'row' }} >
-                        <Text style={{
-                            fontWeight: 'bold',
-                            fontSize: 30,
-                        }} >+</Text>
-                        <Text style={{
-                            fontWeight: 'bold',
-                            fontSize: 18,
-                            marginTop: 7
-                        }}> Thêm người khác</Text>
+            <TouchableOpacity
+                onPress={() => props.navigation.navigate('ThongtindangkykhamScreen')}
+            >
+                <View style={styles.barBox} >
+                    <View style={styles.imageBox}>
+                        <Image source={require("../../../assets/imgs/green_background_add_icon.png")} style={styles.image} />
                     </View>
-                </TouchableOpacity>
-            </View>
+
+                    <View style={styles.contentBNBox}>
+                        <Text style={{ fontWeight: "600", fontSize: 16 }} >Người đã có giấy tờ tùy thân</Text>
+                        <Text style={{ fontSize: 10, color: "gray" }}>(CMND, CCCD, Hộ chiếu)</Text>
+                    </View>
+
+                    <View style={styles.rightIconBox}>
+                        <AntDesign name="right" size={15} color="gray" style={{ alignSelf: 'center' }} />
+                    </View>
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={() => props.navigation.navigate('ThongtindangkykhamScreen')}
+            >
+                <View style={styles.barBox} >
+                    <View style={styles.imageBox}>
+                        <Image source={require("../../../assets/imgs/green_background_add_icon.png")} style={styles.image} />
+                    </View>
+
+                    <View style={styles.contentBNBox}>
+                        <Text style={{ fontWeight: "600", fontSize: 16 }} >Người có giấy tờ khác</Text>
+                        <Text style={{ fontSize: 10, color: "gray" }}>(Giấy khai sinh, Bằng lái xe...)</Text>
+                    </View>
+
+                    <View style={styles.rightIconBox}>
+                        <AntDesign name="right" size={15} color="gray" style={{ alignSelf: 'center' }} />
+                    </View>
+                </View>
+            </TouchableOpacity>
+                <Text style={styles.footerText} > Vui lòng chuẩn bị giấy tờ tùy thân và thẻ BHYT (nếu có) cho công việc{"\n"}đăng ký khám </Text>
         </View>
 
     )
@@ -104,8 +105,8 @@ const DangkykhamScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
-        backgroundColor: 'white'
+        paddingTop: 10,
+        paddingBottom: 10
     },
     modalBox: {
         flex: 1,
@@ -134,10 +135,51 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     headerText: {
-        color: '#0183fd',
+        color: 'black',
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: 18,
+        margin: 10
+    },
+    barBox: {
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        alignItems: "center",
+        marginBottom: 5,
+        height: 60
+    },
+    imageBox: {
+        flex: 1,
+        justifyContent: "center",
+        marginLeft: 10,
+        marginRight: 20,
+    },
+    image: {
+        height: 50,
+        width: 50
+    },
+    contentBNBox: {
+        flex: 6,
+        alignSelf: "stretch",
+        justifyContent: "space-around"
+    },
+    rightIconBox: {
+        flex: 1
+    },
+    footerText:{
+        margin:5,
+        fontSize:12,
+        color:"gray"
     }
 })
 
-export default DangkykhamScreen;
+const mapStateToProps = state => ({
+    benhnhans: state.benhnhans.data,
+    loading: state.benhnhans.loading
+})
+
+const mapDispatchToProps = {
+    fetchBenhnhans,
+    selectBenhnhan,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DangkykhamScreen);
