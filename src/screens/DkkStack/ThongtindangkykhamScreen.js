@@ -3,12 +3,17 @@ import { View, Text, StyleSheet, ActivityIndicator, Modal, Alert } from 'react-n
 import { Picker } from '@react-native-community/picker';
 import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler'
 import { getAllTinh, getCosoyteByTinhId, getKhoaByCosoyteId, getBacSiByKhoaId, getBenhNhanByBenhnhanId } from '../../services/fetchGET'
+import { connect } from "react-redux"
 import { loaiKham } from '../../services/mockedData'
 import { AntDesign } from '@expo/vector-icons';
 import Svg, { Line } from 'react-native-svg'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const ThongtindangkykhamScreen = ({ route, navigation }) => {
+import { fetchTinhs,selectTinh } from "../../redux/tinh"
+import { fetchCosoytes,selectCosoyte } from "../../redux/cosoyte"
+
+
+const ThongtindangkykhamScreen = (props) => {
     const [dataTinh, setDataTinh] = useState([])
     const [dataCS, setDataCS] = useState([])
     const [dataKhoa, setDataKhoa] = useState([])
@@ -24,9 +29,6 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
     const [show, setShow] = useState(false);
     const [textValue, setTextValue] = useState('');
     const [textLength, setTextLength] = useState(0);
-
-    const { benhnhanid } = route.params;
-    const { loaiquanhe } = route.params;
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -47,20 +49,18 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
         showMode('time');
     };
 
-    const zeroIdObj = { "id": 0, "ten": '' }
-
     useEffect(() => {
         setDataTinh([{ "id": 0, "ten": '-- Chọn tỉnh --' }])
-        getAllTinh()
-            .then((json) => [{ "id": 0, "ten": '-- Chọn tỉnh --' }, ...json])
-            .then((json) => setDataTinh(json))
-            .finally(() => setLoading(false));
+        props.fetchTinhs()
+            .then(console.log(props.tinhs))
     }, [])
 
     useEffect(() => {
         if (tinhid != 0) setLoading(true)
         setCSid(0)
         setDataCS([{ "id": 0, "ten": '-- Chọn cơ sở y tế --' }])
+        setDataKhoa([{ "id": 0, "ten": '-- Chọn khoa khám bệnh --' }])
+        setDataBS([{ "id": 0, "ten": '-- Chọn bác sĩ --' }])
         if (tinhid !== 0) {
             getCosoyteByTinhId(tinhid)
                 .then((json) => [{ "id": 0, "ten": '-- Chọn cơ sở y tế --' }, ...json])
@@ -73,6 +73,7 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
         if (CSid != 0) setLoading(true)
         setKhoaid(0)
         setDataKhoa([{ "id": 0, "ten": '-- Chọn khoa khám bệnh --' }])
+        setDataBS([{ "id": 0, "ten": '-- Chọn bác sĩ --' }])
         if (CSid !== 0) {
             getKhoaByCosoyteId(CSid)
                 .then((json) => [{ "id": 0, "ten": '-- Chọn khoa khám bệnh --' }, ...json])
@@ -105,7 +106,7 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                 ]
             )
         } else {
-            navigation.navigate('KiemtrathongtinScreen', { date: date, noidungkham: textValue, loaikhamid: loaikhamid, tinhid: tinhid, CSid: CSid, khoaid: khoaid, BSid: BSid, benhnhanid: benhnhanid, loaiquanhe: loaiquanhe })
+            navigation.navigate('KiemtrathongtinScreen', { date: date, noidungkham: textValue, loaikhamid: loaikhamid, tinhid: tinhid, CSid: CSid, khoaid: khoaid, BSid: BSid })
         }
     }
 
@@ -115,7 +116,7 @@ const ThongtindangkykhamScreen = ({ route, navigation }) => {
                 <Modal
                     animationType="fade"
                     transparent={true}
-                    visible={loading}
+                    visible={false}
                 >
                     <View style={styles.modalBox}>
                         <View style={styles.modal}>
@@ -352,4 +353,16 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ThongtindangkykhamScreen
+const mapStateToProps = state => ({
+    tinhs: state.tinhs,
+    loading: state.tinhs.loading
+})
+
+const mapDispatchToProps = {
+    fetchTinhs,
+    selectTinh,
+    fetchCosoytes,
+    selectCosoyte
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ThongtindangkykhamScreen)
