@@ -1,34 +1,79 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, ActivityIndicator, Modal, Alert } from 'react-native'
+import {
+    View,
+    Text,
+    StyleSheet,
+    ActivityIndicator,
+    Modal,
+    Alert
+} from 'react-native'
 import { Picker } from '@react-native-community/picker';
-import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler'
-import { getAllTinh, getCosoyteByTinhId, getKhoaByCosoyteId, getBacSiByKhoaId, getBenhNhanByBenhnhanId } from '../../services/fetchGET'
+import {
+    ScrollView,
+    TextInput,
+    TouchableOpacity
+} from 'react-native-gesture-handler'
 import { connect } from "react-redux"
 import { loaiKham } from '../../services/mockedData'
 import { AntDesign } from '@expo/vector-icons';
 import Svg, { Line } from 'react-native-svg'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { fetchTinhs,selectTinh } from "../../redux/tinh"
-import { fetchCosoytes,selectCosoyte } from "../../redux/cosoyte"
+import {
+    fetchTinhs,
+    fetchCosoytes,
+    fetchKhoas,
+    fetchBacsis,
+    selectTinh,
+    selectCosoyte,
+    selectKhoa,
+    selectBacsi,
+    deleteTinh,
+    deleteCosoyte,
+    deleteKhoa,
+    deleteBacsi,
+    selectThoigiankham,
+    selectLoaikham,
+    selectNoidungkham,
+} from "../../redux/dangkykham"
 
 
 const ThongtindangkykhamScreen = (props) => {
-    const [dataTinh, setDataTinh] = useState([])
-    const [dataCS, setDataCS] = useState([])
-    const [dataKhoa, setDataKhoa] = useState([])
-    const [dataBS, setDataBS] = useState([])
-    const [tinhid, setTinhid] = useState(0)
-    const [CSid, setCSid] = useState(0)
-    const [khoaid, setKhoaid] = useState(0)
-    const [BSid, setBSid] = useState(0)
-    const [loaikhamid, setLoaikhamid] = useState(1)
-    const [loading, setLoading] = useState(true)
     const [date, setDate] = useState(new Date(1598051730000));
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [textValue, setTextValue] = useState('');
     const [textLength, setTextLength] = useState(0);
+
+    useEffect(() => {
+        props.fetchTinhs()
+    }, [])
+
+    useEffect(() => {
+        props.deleteCosoyte()
+        props.deleteKhoa()
+        props.deleteBacsi()
+        if (props.tinhs.selected.id) {
+            props.fetchCosoytes(props.tinhs.selected.id)
+        }
+    }, [props.tinhs.selected])
+
+
+    useEffect(() => {
+        props.deleteKhoa()
+        props.deleteBacsi()
+        if (props.cosoytes.selected.id) {
+            props.fetchKhoas(props.cosoytes.selected.id)
+        }
+    }, [props.cosoytes.selected])
+
+    useEffect(() => {
+        props.deleteBacsi()
+        if (props.khoas.selected.id) {
+            props.fetchBacsis(props.khoas.selected.id)
+        }
+    }, [props.khoas.selected])
+
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -49,64 +94,20 @@ const ThongtindangkykhamScreen = (props) => {
         showMode('time');
     };
 
-    useEffect(() => {
-        setDataTinh([{ "id": 0, "ten": '-- Chọn tỉnh --' }])
-        props.fetchTinhs()
-            .then(console.log(props.tinhs))
-    }, [])
-
-    useEffect(() => {
-        if (tinhid != 0) setLoading(true)
-        setCSid(0)
-        setDataCS([{ "id": 0, "ten": '-- Chọn cơ sở y tế --' }])
-        setDataKhoa([{ "id": 0, "ten": '-- Chọn khoa khám bệnh --' }])
-        setDataBS([{ "id": 0, "ten": '-- Chọn bác sĩ --' }])
-        if (tinhid !== 0) {
-            getCosoyteByTinhId(tinhid)
-                .then((json) => [{ "id": 0, "ten": '-- Chọn cơ sở y tế --' }, ...json])
-                .then((json) => setDataCS(json))
-                .finally(() => setLoading(false))
-        }
-    }, [tinhid])
-
-    useEffect(() => {
-        if (CSid != 0) setLoading(true)
-        setKhoaid(0)
-        setDataKhoa([{ "id": 0, "ten": '-- Chọn khoa khám bệnh --' }])
-        setDataBS([{ "id": 0, "ten": '-- Chọn bác sĩ --' }])
-        if (CSid !== 0) {
-            getKhoaByCosoyteId(CSid)
-                .then((json) => [{ "id": 0, "ten": '-- Chọn khoa khám bệnh --' }, ...json])
-                .then((json) => setDataKhoa(json))
-                .finally(() => setLoading(false))
-        }
-    }, [tinhid, CSid])
-
-    useEffect(() => {
-        if (khoaid != 0) setLoading(true)
-        setBSid(0)
-        setDataBS([{ "id": 0, "ten": '-- Chọn bác sĩ --' }])
-        if (khoaid !== 0) {
-            getBacSiByKhoaId(khoaid)
-                .then((json) => [{ "id": 0, "ten": '-- Chọn bác sĩ --' }, ...json])
-                .then((json) => setDataBS(json))
-                .finally(() => setLoading(false))
-        }
-    }, [tinhid, CSid, khoaid])
-
-
     const onPressDatLich = () => {
-        if (tinhid * CSid * khoaid * BSid === 0) {
+        if (props.tinhs.selected.id * props.cosoytes.selected.id * props.khoas.selected.id * props.bacsis.selected.id === 0) {
             //alert
             Alert.alert(
                 "Cảnh báo",
                 "Bạn cần chọn bác sĩ khám",
                 [
-                    {text:"OK"}
+                    { text: "OK" }
                 ]
             )
         } else {
-            navigation.navigate('KiemtrathongtinScreen', { date: date, noidungkham: textValue, loaikhamid: loaikhamid, tinhid: tinhid, CSid: CSid, khoaid: khoaid, BSid: BSid })
+            props.selectThoigiankham(date)
+            props.selectNoidungkham(textValue)
+            props.navigation.navigate('KiemtrathongtinScreen')
         }
     }
 
@@ -116,7 +117,7 @@ const ThongtindangkykhamScreen = (props) => {
                 <Modal
                     animationType="fade"
                     transparent={true}
-                    visible={false}
+                    visible={props.loading}
                 >
                     <View style={styles.modalBox}>
                         <View style={styles.modal}>
@@ -130,13 +131,13 @@ const ThongtindangkykhamScreen = (props) => {
                 <View style={styles.pickerBox}>
                     <Picker
                         mode="dropdown"
-                        selectedValue={tinhid}
+                        selectedValue={props.tinhs.selected.id}
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) => {
-                            setTinhid(itemValue)
+                            props.selectTinh(props.tinhs.data[itemIndex])
                         }}
                     >
-                        {dataTinh.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
+                        {props.tinhs.data.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
 
@@ -144,13 +145,13 @@ const ThongtindangkykhamScreen = (props) => {
                 <View style={styles.pickerBox}>
                     <Picker
                         mode="dropdown"
-                        selectedValue={CSid}
+                        selectedValue={props.cosoytes.selected.id}
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) => {
-                            setCSid(itemValue)
+                            props.selectCosoyte(props.cosoytes.data[itemIndex])
                         }}
                     >
-                        {dataCS.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
+                        {props.cosoytes.data.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
 
@@ -158,13 +159,13 @@ const ThongtindangkykhamScreen = (props) => {
                 <View style={styles.pickerBox}>
                     <Picker
                         mode="dropdown"
-                        selectedValue={khoaid}
+                        selectedValue={props.khoas.selected.id}
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) => {
-                            setKhoaid(itemValue)
+                            props.selectKhoa(props.khoas.data[itemIndex])
                         }}
                     >
-                        {dataKhoa.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
+                        {props.khoas.data.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
 
@@ -172,13 +173,13 @@ const ThongtindangkykhamScreen = (props) => {
                 <View style={styles.pickerBox}>
                     <Picker
                         mode="dropdown"
-                        selectedValue={BSid}
+                        selectedValue={props.bacsis.selected.id}
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) => {
-                            setBSid(itemValue)
+                            props.selectBacsi(props.bacsis.data[itemIndex])
                         }}
                     >
-                        {dataBS.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
+                        {props.bacsis.data.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
                     </Picker>
                 </View>
 
@@ -187,10 +188,10 @@ const ThongtindangkykhamScreen = (props) => {
                 <View style={styles.pickerBox}>
                     <Picker
                         mode="dropdown"
-                        selectedValue={loaikhamid}
+                        selectedValue={props.loaikham.id}
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) =>
-                            setLoaikhamid(itemValue)
+                            props.selectLoaikham(loaiKham[itemIndex])
                         }
                     >
                         {loaiKham.map((item) => (<Picker.Item key={item.id} label={item.ten} value={item.id} />))}
@@ -349,20 +350,36 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 16,
-
     }
 })
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     tinhs: state.tinhs,
-    loading: state.tinhs.loading
+    cosoytes: state.cosoytes,
+    khoas: state.khoas,
+    bacsis: state.bacsis,
+    loading: state.tinhs.loading || state.cosoytes.loading || state.khoas.loading || state.bacsis.loading,
+    noidungkham: state.noidungkham.selected,
+    loaikham: state.loaikham.selected,
+    thoigiankham: state.thoigiankham.selected
 })
 
 const mapDispatchToProps = {
     fetchTinhs,
     selectTinh,
+    deleteTinh,
     fetchCosoytes,
-    selectCosoyte
+    selectCosoyte,
+    deleteCosoyte,
+    fetchKhoas,
+    selectKhoa,
+    deleteKhoa,
+    fetchBacsis,
+    selectBacsi,
+    deleteBacsi,
+    selectThoigiankham,
+    selectLoaikham,
+    selectNoidungkham,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ThongtindangkykhamScreen)

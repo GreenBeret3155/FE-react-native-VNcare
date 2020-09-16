@@ -1,11 +1,24 @@
 import { combineReducers } from 'redux';
-import { benhnhanReducers } from './benhnhan'
-import { tinhReducers } from './tinh'
+import { benhnhanReducers, 
+    tinhReducers, 
+    cosoyteReducers, 
+    khoaReducers, 
+    bacsiReducers,
+    noidungkhamReducers,
+    loaikhamReducers,
+    thoigiankhamReducers
+} from './dangkykham'
 
 // Root Reducer
 const rootReducer = combineReducers({
     benhnhans: benhnhanReducers,
-    tinhs: tinhReducers
+    tinhs: tinhReducers,
+    cosoytes: cosoyteReducers,
+    khoas: khoaReducers,
+    bacsis: bacsiReducers,
+    noidungkham: noidungkhamReducers,
+    thoigiankham: thoigiankhamReducers,
+    loaikham: loaikhamReducers,
 });
 
 export default rootReducer;

@@ -28,9 +28,6 @@ import { color } from 'react-native-reanimated';
 import store from "./src/redux/store/configureStore"
 import { Provider } from 'react-redux'
 
-import rootReducers from './src/redux'
-
-
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -55,7 +52,7 @@ const HomeTab = () => {
             screenOptions={{
                 headerLeft: null,
                 headerStyle: {
-                    backgroundColor: '#3bccbb',
+                    backgroundColor: '#4a6ea8',
                     height: 120,
                     elevation: 0,
                 },
@@ -82,7 +79,7 @@ const DangkykhamTab = ({ navigation }) => {
         <DKKStack.Navigator initialRouteName='DangkykhamScreen'
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: '#3bccbb',
+                    backgroundColor: '#4a6ea8',
                     height: 120,
                     elevation: 0,
                 },

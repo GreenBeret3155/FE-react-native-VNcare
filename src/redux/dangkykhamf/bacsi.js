@@ -1,4 +1,4 @@
-import { getBacSiByKhoaId } from '../services/fetchGET'
+import { getBacSiByKhoaId } from '../../services/fetchGET'
 
 const bacsiActions = {
     PENDING: 'FETCH_bacsi_PENDING',
@@ -35,7 +35,7 @@ const bacsiReducers = (state = initialState, action) =>{
             return {...state, loading: false, data: action.payload };
         }
         case bacsiActions.REJECTED: {
-            return {...state, loading: false, error: 'Đã xảy ra lỗi trong quá trình fetch dữ liệu từ API tỉnh'};
+            return {...state, loading: false, error: 'Đã xảy ra lỗi trong quá trình fetch dữ liệu từ API bác sĩ'};
         }
         case bacsiActions.SELECTED: {
             return {...state, selected: action.payload}

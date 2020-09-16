@@ -1,4 +1,4 @@
-import { getKhoaByCosoyteId } from '../services/fetchGET'
+import { getKhoaByCosoyteId } from '../../services/fetchGET'
 
 const khoaActions = {
     PENDING: 'FETCH_khoa_PENDING',
@@ -35,7 +35,7 @@ const khoaReducers = (state = initialState, action) =>{
             return {...state, loading: false, data: action.payload };
         }
         case khoaActions.REJECTED: {
-            return {...state, loading: false, error: 'Đã xảy ra lỗi trong quá trình fetch dữ liệu từ API tỉnh'};
+            return {...state, loading: false, error: 'Đã xảy ra lỗi trong quá trình fetch dữ liệu từ API khoa'};
         }
         case khoaActions.SELECTED: {
             return {...state, selected: action.payload}

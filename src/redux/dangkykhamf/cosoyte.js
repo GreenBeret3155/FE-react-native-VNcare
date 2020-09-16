@@ -1,4 +1,4 @@
-import { getCosoyteByTinhId } from '../services/fetchGET'
+import { getCosoyteByTinhId } from '../../services/fetchGET'
 
 const cosoyteActions = {
     PENDING: 'FETCH_cosoyte_PENDING',
@@ -20,7 +20,7 @@ const selectCosoyte = (selected_cosoyte) => (dispatch) => {
 }
 
 const initialState = {
-    data: [],
+    data: [], 
     selected: null,
     loading: false,
     error: null,

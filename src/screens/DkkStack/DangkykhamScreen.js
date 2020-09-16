@@ -3,7 +3,7 @@ import { Image, TouchableOpacity, View, Text, StyleSheet, ScrollView, Modal, Fla
 import { AntDesign } from '@expo/vector-icons';
 import { chuyenLoaiQuanHe } from '../../services/xuly'
 import { connect } from 'react-redux'
-import { fetchBenhnhans, selectBenhnhan } from '../../redux/benhnhan'
+import { fetchBenhnhans, selectBenhnhan } from '../../redux/dangkykham'
 
 const DangkykhamScreen = (props) => {
 
