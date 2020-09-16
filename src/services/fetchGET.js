@@ -37,23 +37,3 @@ export const getBacSiByKhoaId = (khoaid) =>{
     const URL = `${globalUrl}/bacsi/search?khoaid=${khoaid}`
     return fetch(URL)
 }
-
-export const getTinhById = (id) =>{
-    const URL = `${globalUrl}/tinh/details/${id}`
-    return fetch(URL)
-}
-
-export const getCosoyteById = (id) =>{
-    const URL = `${globalUrl}/cosoyte/details/${id}`
-    return fetch(URL)
-}
-
-export const getKhoaById = (id) =>{
-    const URL = `${globalUrl}/khoa/details/${id}`
-    return fetch(URL)
-}
-
-export const getBacSiById = (id) =>{
-    const URL = `${globalUrl}/bacsi/details/${id}`
-    return fetch(URL)
-}

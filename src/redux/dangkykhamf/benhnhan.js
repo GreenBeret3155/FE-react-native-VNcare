@@ -1,4 +1,4 @@
-import { getQuanHeByBenhNhanId } from '../services/fetchGET'
+import { getQuanHeByBenhNhanId } from '../../services/fetchGET'
 
 const benhnhanActions = {
     PENDING: 'FETCH_benhnhan_PENDING',
@@ -8,7 +8,7 @@ const benhnhanActions = {
 };
 
 const fetchBenhnhans = () => (dispatch) => {
-    console.log("Ok")
+    
     dispatch({ type: benhnhanActions.PENDING });
     return getQuanHeByBenhNhanId(1)
         .then(response => response.json())

@@ -1,4 +1,4 @@
-import { getAllTinh } from '../services/fetchGET'
+import { getAllTinh } from '../../services/fetchGET'
 
 const tinhActions = {
     PENDING: 'FETCH_tinh_PENDING',
@@ -21,7 +21,7 @@ const selectTinh = (selected_tinh) => (dispatch) => {
 }
 
 const initialState = {
-    data: [],
+    data: [], 
     selected: null,
     loading: false,
     error: null,
@@ -30,11 +30,9 @@ const initialState = {
 const tinhReducers = (state = initialState, action) => {
     switch (action.type) {
         case tinhActions.PENDING: {
-            console.log("pen")
-            return { ...state, loading: true };
+            return { ...state, loading: true};
         }
         case tinhActions.FULFILLED: {
-            console.log("full",action.payload)
             return { ...state, loading: false, data: action.payload };
         }
         case tinhActions.REJECTED: {
