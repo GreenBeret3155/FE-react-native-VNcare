@@ -1,3 +1,3 @@
 export default {
-    globalUrl : 'http://d798944d620b.ngrok.io/api'
+    globalUrl : 'http://e0a8164be5cf.ngrok.io/api'
 } ;

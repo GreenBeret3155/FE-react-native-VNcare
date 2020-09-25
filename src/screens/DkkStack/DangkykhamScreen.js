@@ -1,15 +1,76 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Image, TouchableOpacity, View, Text, StyleSheet, ScrollView, Modal, FlatList, ActivityIndicator } from 'react-native'
+import RBSheet from "react-native-raw-bottom-sheet";
 import { AntDesign } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import { Theme } from '../../utils/theme'
 import { chuyenLoaiQuanHe } from '../../services/xuly'
 import { connect } from 'react-redux'
 import { fetchBenhnhans, selectBenhnhan } from '../../redux/dangkykham'
+import { handleUploadPhoto } from '../../services/fetchPOST'
 
 const DangkykhamScreen = (props) => {
+    const refRBSheet = useRef();
 
     useEffect(() => {
         props.fetchBenhnhans()
     }, []);
+
+    const [image, setImage] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+                const { status2 } = await ImagePicker.requestCameraPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
+                // if (status2 !== 'granted') {
+                //     alert('Sorry, we need camera permissions to make this work!');
+                // }
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
+        if (image) {
+            console.log("start post")
+            handleUploadPhoto(image)
+        }
+    }, [image])
+
+    const pickImageCR = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [3, 4],
+            quality: 0.5,
+            base64: false,
+        });
+
+        console.log(result);
+
+        if (!result.cancelled) {
+            setImage(result);
+        }
+    };
+
+    const pickImageC = async () => {
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [3, 4],
+            quality: 0.5,
+            base64: false,
+        });
+
+        console.log(result);
+
+        if (!result.cancelled) {
+            setImage(result);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -29,6 +90,32 @@ const DangkykhamScreen = (props) => {
                     </View>
                 </View>
             </Modal>
+            <RBSheet
+                ref={refRBSheet}
+                closeOnDragDown={true}
+                closeOnPressMask={true}
+                height={200}
+                customStyles={{
+                    wrapper: {
+                        backgroundColor: 'rgba(0,0,0,0.4)'
+                    },
+                    container: {
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                    },
+                    draggableIcon: {
+                        backgroundColor: Theme.colors.primary
+                    }
+                }}
+            >
+                <>
+                    <TouchableOpacity onPress={pickImageC} style={styles.rbsheetBox} >
+                        <Text style={styles.rbsheetText}>Chụp ảnh với camera</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={pickImageCR} style={styles.rbsheetBox} >
+                        <Text style={styles.rbsheetText}>Lấy ảnh từ thư viện máy</Text>
+                    </TouchableOpacity>
+                </>
+            </RBSheet>
             <FlatList
                 data={props.benhnhans}
                 style={{ flexGrow: 0 }}
@@ -60,7 +147,7 @@ const DangkykhamScreen = (props) => {
             <Text style={styles.headerText}> Đăng ký mới</Text>
 
             <TouchableOpacity
-                onPress={() => props.navigation.navigate('ThongtindangkykhamScreen')}
+                onPress={() => refRBSheet.current.open()}
             >
                 <View style={styles.barBox} >
                     <View style={styles.imageBox}>
@@ -79,7 +166,7 @@ const DangkykhamScreen = (props) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-                onPress={() => props.navigation.navigate('ThongtindangkykhamScreen')}
+                onPress={() => refRBSheet.current.open()}
             >
                 <View style={styles.barBox} >
                     <View style={styles.imageBox}>
@@ -96,7 +183,7 @@ const DangkykhamScreen = (props) => {
                     </View>
                 </View>
             </TouchableOpacity>
-                <Text style={styles.footerText} > Vui lòng chuẩn bị giấy tờ tùy thân và thẻ BHYT (nếu có) cho công việc{"\n"}đăng ký khám </Text>
+            <Text style={styles.footerText} > Vui lòng chuẩn bị giấy tờ tùy thân và thẻ BHYT (nếu có) cho công việc{"\n"}đăng ký khám </Text>
         </View>
 
     )
@@ -134,6 +221,17 @@ const styles = StyleSheet.create({
     modalText: {
         color: 'white'
     },
+    rbsheetBox: {
+        flex: 1,
+        backgroundColor: Theme.colors.secondary,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+    },
+    rbsheetText: {
+        color: 'white',
+        fontWeight: 'bold'
+    },
     headerText: {
         color: 'black',
         fontWeight: 'bold',
@@ -165,10 +263,10 @@ const styles = StyleSheet.create({
     rightIconBox: {
         flex: 1
     },
-    footerText:{
-        margin:5,
-        fontSize:12,
-        color:"gray"
+    footerText: {
+        margin: 5,
+        fontSize: 12,
+        color: "gray"
     }
 })
 

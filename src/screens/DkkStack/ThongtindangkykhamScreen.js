@@ -18,6 +18,7 @@ import { loaiKham } from '../../services/mockedData'
 import { AntDesign } from '@expo/vector-icons';
 import Svg, { Line } from 'react-native-svg'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Theme } from '../../utils/theme'
 
 import {
     fetchTinhs,
@@ -39,7 +40,7 @@ import {
 
 
 const ThongtindangkykhamScreen = (props) => {
-    const [date, setDate] = useState(new Date(1598051730000));
+    const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [textValue, setTextValue] = useState('');
@@ -199,7 +200,7 @@ const ThongtindangkykhamScreen = (props) => {
                 </View>
                 {show && (
                     <DateTimePicker
-                        style={{ color: '#3bccbb' }}
+                        style={{ color: Theme.colors.primary }}
                         testID="dateTimePicker"
                         value={date}
                         mode={mode}
@@ -338,9 +339,9 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     button: {
-        backgroundColor: '#3bccbb',
+        backgroundColor: Theme.colors.primary,
         borderRadius: 10,
-        borderColor: '#3bccbb',
+        borderColor: Theme.colors.primary,
         borderWidth: 0.5,
         alignItems: 'center',
         justifyContent: 'center',

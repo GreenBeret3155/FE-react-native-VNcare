@@ -6,6 +6,7 @@ import { Loading, MyTextInput } from '../../components'
 import { TextInput } from 'react-native-gesture-handler'
 import { firebase } from '../../firebase/config';
 import { Octicons } from '@expo/vector-icons';
+import { Theme } from '../../utils/theme'
 
 const MyButton = (props) => {
     return (
@@ -106,7 +107,7 @@ function LoginScreen({ navigation }) {
                 <View>
                     <View style={[
                         styles.inputBox,
-                        {borderColor: b1 ? '#3bccbb' : 'gray' , borderBottomWidth: b1 ?  2  : 0.5 }
+                        {borderColor: b1 ? Theme.colors.primary : 'gray' , borderBottomWidth: b1 ?  2  : 0.5 }
                         ]}>
                         <TextInput style={{ fontSize: 16, width: 350 }}
                             value={email}
@@ -127,7 +128,7 @@ function LoginScreen({ navigation }) {
                     </View>
                     <View style={[
                         styles.inputBox,
-                        {borderColor: b2 ? '#3bccbb' : 'gray' , borderBottomWidth: b2 ?  2  : 0.5 }
+                        {borderColor: b2 ? Theme.colors.primary : 'gray' , borderBottomWidth: b2 ?  2  : 0.5 }
                         ]}>
                         <TextInput style={{ flex: 13, fontSize: 16, width: 300 }}
                             value={password}
@@ -168,9 +169,9 @@ function LoginScreen({ navigation }) {
                 <View style={{ alignSelf: 'stretch' }}>
                     <MyButton onPress={onLogin}
                         stylebox={{
-                            backgroundColor: '#3bccbb',
+                            backgroundColor: Theme.colors.primary,
                             borderRadius: 10,
-                            borderColor: '#3bccbb'
+                            borderColor: Theme.colors.primary
                         }}>
                         Đăng nhập
                         </MyButton>
@@ -182,9 +183,9 @@ function LoginScreen({ navigation }) {
                             backgroundColor: '#fff',
                             borderRadius: 10,
                             borderWidth: 1,
-                            borderColor: '#3bccbb'
+                            borderColor: Theme.colors.primary
                         }}
-                        styletext={{ color: '#3bccbb' }}
+                        styletext={{ color: Theme.colors.primary }}
                     >
                         Đăng ký
                     </MyButton>
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
         fontSize: 18, 
         fontWeight: 'bold', 
         margin: 15, 
-        color: '#3bccbb'
+        color: Theme.colors.primary
     },
     inputBox: {
         flexDirection: "row",

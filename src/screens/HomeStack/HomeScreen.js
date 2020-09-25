@@ -1,15 +1,55 @@
 import React from 'react'
-import { Alert, Button, Linking, Image, StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {
+    Image,
+    StyleSheet,
+    Text,
+    View,
+    Modal,
+    TouchableOpacity,
+    Button,
+    Platform
+} from 'react-native';
 
-const Tab = createBottomTabNavigator();
+import { useState } from 'react';
+import { Theme } from '../../utils/theme'
+import { useEffect } from 'react';
 
-function HomeScreen({ navigation }) {
+import * as ImagePicker from 'expo-image-picker';
+
+function HomeScreen() {
+    const [image, setImage] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
+            }
+        })();
+    }, []);
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [3, 4],
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.cancelled) {
+            setImage(result.uri);
+        }
+    };
+
     return (
-        <View style={styles.container} >
-            <Image source={require('../../../assets/imgs/search-icon.png')} style={{height:250 , width: 250}} />
-            <Text>Home</Text>
-
+        <View style={styles.container}>
+            <Button title="Pick an image from camera roll" onPress={pickImage} />
+            {image && <Image source={{ uri: image }} style={{ width: 300, height: 400 }} />}
+            
         </View>
     );
 }
@@ -19,10 +59,10 @@ function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor:'white',
-        alignItems:'center',
+        backgroundColor: 'white',
+        alignItems: 'center',
         justifyContent: 'center'
-    }
+    },
 })
 
 export default HomeScreen;
