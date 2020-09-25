@@ -1,64 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import {
+    Text,
+    View,
+    StyleSheet,
+    Dimensions,
+    TouchableOpacity
+} from 'react-native';
+import FirstRoute from './FirstRoute'
+import SecondRoute from './SecondRoute'
+import ThirdRoute from './ThirdRoute'
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 import Timeline from "react-native-timeline-flatlist";
+import { Theme } from '../../utils/theme'
 
+//redux
+import { connect } from 'react-redux'
+import {
+    fetchHosos,
+    selectHoso,
+    deleteHoso,
+} from '../../redux/hoso'
+import {
+    fetchBenhnhans,
+    selectBenhnhan
+} from '../../redux/dangkykham'
 
-const FirstRoute = () => {
-    const data = [
-        {
-            title: "Nguyễn Thanh Chính               11/04/2020",
-            description:
-                " B.S Trần Quang A\n BV Bệnh nhiệt đới TW, Hà Nội \n Chuyên khoa Nhi ",
-        },
-        {
-            title: "Nguyễn Quang Liêm                12/04/2020",
-            description:
-                " Th.S BS Ngọc Trinh\n BV Phụ sản Tp.Hồ Chí Minh\n Chuyên khoa Hiếm muộn",
-        },
-        { time: "12:00", title: " " },
-    ];
-
-    return (
-        <View style={styles.scene}>
-            <Timeline
-                style={styles.list}
-                data={data}
-                circleSize={20}
-                circleColor="#cb2728"
-                lineColor="#cb2728"
-                rowContainerStyle={{ color: "black" }}
-                descriptionStyle={{
-                    color: "gray",
-                    borderWidth: 0.5,
-                    borderColor: "gray",
-                    borderRadius: 5,
-                    padding: 10
-                }}
-                options={{
-                    style: { paddingTop: 5 },
-                }}
-                showTime={false}
-            />
-        </View>
-    );
-}
-
-
-const SecondRoute = () => (
-    <View style={styles.scene}><Text>Trang hai</Text></View>
-);
-
-
-
-const ThirdRoute = () => (
-    <View style={styles.scene}><Text>Trang ba</Text></View>
-);
 
 const initialLayout = { width: Dimensions.get('window').width };
 
-export default function HosoScreen() {
+const HosoScreen = (props) => {
     const [index, setIndex] = useState(0);
+
     const [routes] = useState([
         { key: 'first', title: 'Lịch hẹn khám' },
         { key: 'second', title: 'Các lần khám trước' },
@@ -71,6 +43,7 @@ export default function HosoScreen() {
         third: ThirdRoute,
     });
 
+
     return (
         <TabView
             navigationState={{ index, routes }}
@@ -79,10 +52,12 @@ export default function HosoScreen() {
                 <TabBar {...props}
                     renderLabel={({ route, focused, color }) => {
                         let color1;
-                        color1 = focused ? 'white' : '#cbcbcb';
+                        let color2;
+                        color1 = focused ? 'white' : Theme.colors.secondary;
+                        color2 = focused ? 'black' : 'white'
                         return (
-                            <View style={{ flex: 1, backgroundColor: color1, borderRadius: 10, borderColor: '#cbcbcb', borderWidth: 0.5 }}>
-                                <Text style={{ backgroundColor: "transparent", color: 'black', margin: 8, fontSize: 12 }}>
+                            <View style={{ flex: 1, backgroundColor: color1, borderRadius: 10, borderColor: Theme.colors.secondary, borderWidth: 0.5 }}>
+                                <Text style={{ backgroundColor: "transparent", color: color2, margin: 8, fontSize: 12 }}>
                                     {route.title}
                                 </Text>
                             </View>
@@ -103,21 +78,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 15,
-        //paddingTop:30,
         backgroundColor: "white",
     },
     list: {
         flex: 1,
-        //marginTop:10,
     },
     scene: {
         flex: 1,
         backgroundColor: '#fff',
-        borderColor: '#cbcbcb',
+        borderColor: Theme.colors.secondary,
         borderTopWidth: 0.5,
     },
     bar: {
-        backgroundColor: '#3bccbb',
+        backgroundColor: Theme.colors.primary,
         height: 30,
         elevation: 0,
     },
@@ -127,8 +100,30 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         marginRight: 5,
         borderWidth: 0.1,
-        borderColor: '#cbcbcb',
+        borderColor: Theme.colors.secondary,
         borderRadius: 10
     }
 });
 
+const mapStateToProps = (state) => ({
+    benhnhans: state.benhnhans.data,
+    tinhs: state.tinhs,
+    cosoytes: state.cosoytes,
+    khoas: state.khoas,
+    bacsis: state.bacsis,
+    loading: state.benhnhans.loading || state.hoso.loading,
+    noidungkham: state.noidungkham.selected,
+    loaikham: state.loaikham.selected,
+    thoigiankham: state.thoigiankham.selected,
+    hoso: state.hoso.data
+})
+
+const mapDispatchToProps = {
+    fetchHosos,
+    selectHoso,
+    deleteHoso,
+    fetchBenhnhans,
+    selectBenhnhan,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HosoScreen)

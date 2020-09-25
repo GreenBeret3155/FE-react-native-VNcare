@@ -1,8 +1,8 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, Linking, Image, StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { Text } from 'react-native';
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,10 +19,13 @@ import {
     DangkykhamScreen,
     KiemtrathongtinScreen
 } from './src/screens'
+import CancelButton from './src/components/CancelButton'
 import { Loading } from './src/components';
 import { AntDesign } from '@expo/vector-icons';
-import { firebase } from './src/firebase/config'
-import { color } from 'react-native-reanimated';
+import { firebase } from './src/firebase/config';
+
+//theme
+import { Theme } from './src/utils/theme'
 
 //redux
 import store from "./src/redux/store/configureStore"
@@ -52,7 +55,7 @@ const HomeTab = () => {
             screenOptions={{
                 headerLeft: null,
                 headerStyle: {
-                    backgroundColor: '#4a6ea8',
+                    backgroundColor: Theme.colors.primary,
                     height: 120,
                     elevation: 0,
                 },
@@ -75,11 +78,17 @@ const HomeTab = () => {
 const DKKStack = createStackNavigator();
 
 const DangkykhamTab = ({ navigation }) => {
+    const resetAction = () => CommonActions.reset({
+        index: 0,
+        routes: [
+          { name: 'DangkykhamScreen' }
+        ],
+      })
     return (
         <DKKStack.Navigator initialRouteName='DangkykhamScreen'
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: '#4a6ea8',
+                    backgroundColor: Theme.colors.primary,
                     height: 120,
                     elevation: 0,
                 },
@@ -110,9 +119,7 @@ const DangkykhamTab = ({ navigation }) => {
                     title: 'Thêm lịch khám',
                     headerRight: () => {
                         return (
-                            <TouchableOpacity style={{ marginRight: 20 }}>
-                                <Text style={{ fontSize: 14, color: '#fff' }} onPress={() => navigation.push('DangkykhamScreen')}>Hủy</Text>
-                            </TouchableOpacity>
+                            <CancelButton resetAction = {resetAction} navigation = {navigation} />
                         )
                     }
                 }} />
@@ -122,9 +129,7 @@ const DangkykhamTab = ({ navigation }) => {
                     title: 'Thông tin đăng ký khám',
                     headerRight: () => {
                         return (
-                            <TouchableOpacity style={{ marginRight: 20 }}>
-                                <Text style={{ fontSize: 14, color: '#fff' }} onPress={() => navigation.push('DangkykhamScreen')}>Hủy</Text>
-                            </TouchableOpacity>
+                            <CancelButton resetAction = {resetAction} navigation = {navigation} />
                         )
                     }
                 }} />
@@ -134,9 +139,7 @@ const DangkykhamTab = ({ navigation }) => {
                     title: 'Thông tin bệnh nhân',
                     headerRight: () => {
                         return (
-                            <TouchableOpacity style={{ marginRight: 20 }}>
-                                <Text style={{ fontSize: 14, color: '#fff' }} onPress={() => navigation.push('DangkykhamScreen')}>Hủy</Text>
-                            </TouchableOpacity>
+                            <CancelButton resetAction = {resetAction} navigation = {navigation} />
                         )
                     }
                 }} />
@@ -155,7 +158,8 @@ const HosoTab = () => {
                 options={{
                     title: 'Hồ sơ sức khỏe',
                     headerStyle: {
-                        backgroundColor: '#3bccbb',
+                        backgroundColor: Theme.colors.primary,
+                        height:120,
                         elevation: 0,
                     },
                     headerTitleAlign: 'center',
@@ -179,7 +183,7 @@ const SettingsTab = () => {
                     title: 'Cài đặt',
                     headerLeft: null,
                     headerStyle: {
-                        backgroundColor: '#3bccbb',
+                        backgroundColor: Theme.colors.primary,
                         elevation: 0,
                     },
                     headerTitleAlign: 'center',
@@ -227,10 +231,10 @@ const TabsScreen = () => {
                 }
             })}
             tabBarOptions={{
-                activeBackgroundColor: '#3bccbb',
-                inactiveBackgroundColor: '#fff',
-                activeTintColor: '#fff',
-                inactiveTintColor: 'gray',
+                activeBackgroundColor: '#fff',
+                inactiveBackgroundColor: Theme.colors.primary,
+                activeTintColor: 'gray',
+                inactiveTintColor: '#fff',
                 style: {
                     height: 65
                 },
@@ -343,7 +347,7 @@ function App() {
                                     options={{
                                         headerShown: false,
                                         headerStyle: {
-                                            backgroundColor: '#3bccbb',
+                                            backgroundColor: Theme.colors.primary,
                                             elevation: 0,
                                         },
                                     }}

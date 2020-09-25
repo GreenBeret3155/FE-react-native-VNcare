@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from 'react'
-import { TouchableOpacity, View, Text, StyleSheet, ScrollView, ActivityIndicator, Modal, CheckBox } from 'react-native'
+import {
+    TouchableOpacity,
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    ActivityIndicator,
+    Modal,
+    Image,
+    CheckBox
+} from 'react-native'
+import { CommonActions } from '@react-navigation/native';
 import Svg, { Line } from 'react-native-svg'
 import { chuyenGioiTinh, chuyenLoaiQuanHe } from '../../services/xuly'
-import { connect } from "react-redux"
+import { AntDesign } from '@expo/vector-icons';
 
+//theme
+import { Theme } from '../../utils/theme'
+
+//redux
+import { connect } from "react-redux"
 import {
-    fetchTinhs,
-    fetchCosoytes,
-    fetchKhoas,
-    fetchBacsis,
-    selectTinh,
-    selectCosoyte,
-    selectKhoa,
-    selectBacsi,
-    deleteTinh,
-    deleteCosoyte,
-    deleteKhoa,
-    deleteBacsi,
-    selectThoigiankham,
-    selectLoaikham,
-    selectNoidungkham,
+    postDangkykham,
+    resetDangkykham
 } from "../../redux/dangkykham"
+
 
 const Textsao = (props) => {
     return (
@@ -34,18 +38,82 @@ const KhongCoThongTin = ({ children }) => {
     return ((children == null) ? <Text style={{ color: 'red' }}> Không có thông tin</Text> : <Text> {children} </Text>)
 }
 
-const KiemtrathongtinScreen = (props, { route, navigation }) => {
+const resetAction = (screen, navigation) => {
+    navigation.dispatch(
+        CommonActions.reset({
+            index: 0,
+            routes: [
+                { name: screen }
+            ],
+        })
+    )
+}
+
+
+
+const KiemtrathongtinScreen = (props) => {
     const [checkbox, setCheckbox] = useState(false);
     const currentDate = new Date();
-    useEffect(() =>{
-        console.log(props.noidungkham)
-        console.log(props.thoigiankham)
-    },[])
 
     return (
         <View style={styles.container}>
             <ScrollView>
                 <View>
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={props.dangkykham.loading}
+                    >
+                        <View style={styles.modalBox}>
+                            <View style={styles.modal}>
+                                <Text style={styles.modalText}>đang thực hiện</Text>
+                                <ActivityIndicator color='white' />
+                            </View>
+                        </View>
+                    </Modal>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={props.dangkykham.result}
+                        onRequestClose={() => {
+                            props.resetDangkykham()
+                            resetAction('HomeScreen', props.navigation)
+                        }}
+                    >
+                        <View style={styles.modalBox2}>
+                            <View style={styles.modal2}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        props.resetDangkykham()
+                                        resetAction('HomeScreen', props.navigation)
+                                    }}
+                                    style={styles.cancelButton}
+                                >
+                                    <AntDesign name="closesquareo" size={24} color="white" />
+                                </TouchableOpacity>
+
+                                <View style={{}}>
+                                    <Image source={require('../../../assets/imgs/check.png')} style={styles.img} />
+                                    <Text style={styles.modalText2}>
+                                        Bệnh nhân
+                                    <Text style={{ fontWeight: "bold" }} > {props.benhnhan.benhnhanphu.ten} </Text>
+                                    đã đặt lịch khám bệnh thành công.
+                                    </Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        props.resetDangkykham()
+                                        resetAction('HosoScreen', props.navigation)
+                                    }}
+                                    style={styles.navigateButton}
+                                >
+                                    <Text style={{ color: 'white', fontWeight: 'bold' }}>Kiểm tra lịch khám bệnh  </Text>
+                                    <AntDesign name="doubleright" size={14} color="white" style={{ alignSelf: 'center' }} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
+
                     <Text style={styles.headerText}>Vui lòng kiểm tra thông tin lịch khám</Text>
                     <View style={styles.inforBox}>
                         <Text style={{ fontWeight: "bold" }}>Thông tin cá nhân</Text>
@@ -264,7 +332,7 @@ const KiemtrathongtinScreen = (props, { route, navigation }) => {
                             style={styles.button}
                             disabled={!checkbox}
                             onPress={() => {
-                                // POST
+                                props.postDangkykham(currentDate, props.thoigiankham, props.noidungkham, props.loaikham.id, props.benhnhan.benhnhanphu.id, props.bacsis.selected.id)
                             }}
                         >
                             <Text style={styles.buttonText}>
@@ -313,6 +381,54 @@ const styles = StyleSheet.create({
     modalText: {
         color: 'white'
     },
+    cancelButton: {
+        borderRadius: 10,
+        alignSelf: 'flex-end',
+        padding: 4,
+    },
+    modalBox2: {
+        flex: 1,
+        justifyContent: "center",
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        alignItems: "center",
+    },
+    modal2: {
+        width: 300,
+        padding: 10,
+        backgroundColor: Theme.colors.secondary,
+        borderRadius: 10,
+        alignItems: "center",
+        justifyContent: 'space-around',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    modalText2: {
+        margin: 10,
+        color: 'white',
+        alignSelf: 'center'
+    },
+    navigateButton: {
+        flexDirection: 'row',
+        backgroundColor: Theme.colors.primary,
+        borderRadius: 10,
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        margin: 10
+    },
+    img: {
+        width: 130,
+        height: 130,
+        margin: 20,
+        alignSelf: 'center'
+    },
     headerText: {
         color: '#0183fd',
         fontWeight: 'bold',
@@ -333,9 +449,9 @@ const styles = StyleSheet.create({
         marginTop: 40,
     },
     button: {
-        backgroundColor: '#3bccbb',
+        backgroundColor: Theme.colors.primary,
         borderRadius: 10,
-        borderColor: '#3bccbb',
+        borderColor: Theme.colors.primary,
         borderWidth: 0.5,
         alignItems: 'center',
         justifyContent: 'center',
@@ -355,11 +471,17 @@ const mapStateToProps = (state) => ({
     cosoytes: state.cosoytes,
     khoas: state.khoas,
     bacsis: state.bacsis,
-    loading: state.tinhs.loading || state.cosoytes.loading || state.khoas.loading || state.bacsis.loading,
+    loading: state.dangkykham.loading,
     noidungkham: state.noidungkham.selected,
     loaikham: state.loaikham.selected,
-    thoigiankham: state.thoigiankham.selected
+    thoigiankham: state.thoigiankham.selected,
+    dangkykham: state.dangkykham
 })
 
+const mapDispatchToProps = {
+    postDangkykham,
+    resetDangkykham
+}
 
-export default connect(mapStateToProps)(KiemtrathongtinScreen)
+
+export default connect(mapStateToProps, mapDispatchToProps)(KiemtrathongtinScreen)

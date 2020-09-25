@@ -1,12 +1,11 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet } from 'react-native'
 import { MyButton } from '../../components'
-import anh from '../../../assets/imgs/check.png'
 
 const SuccessScreen = ({ navigation }) => {
     return (
         <View style={{ padding: 30 }}>
-            <Image source={anh} style={styles.img} />
+            <Image source={require('../../../assets/imgs/check.png')} style={styles.img} />
             <Text style={styles.textstyle} >
                 Bạn đã đăng ký tài khoản thành công
             </Text>

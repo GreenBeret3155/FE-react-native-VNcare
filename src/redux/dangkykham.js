@@ -3,8 +3,9 @@ import {
     getCosoyteByTinhId,
     getBacSiByKhoaId,
     getKhoaByCosoyteId,
-    getQuanHeByBenhNhanId
+    getQuanHeByBenhNhanId,
 } from '../services/fetchGET'
+import{ createDangkykham } from '../services/fetchPOST'
 import { loaiKham } from '../services/mockedData';
 
 // initialState
@@ -19,31 +20,38 @@ const initialState2 = {
     selected: {},
 }
 
+const initialState3 = {
+    data: [],
+    selected: {},
+    result: null,
+    loading: false,
+}
+
 const tinhActions = {
     PENDING: 'FETCH_tinh_PENDING',
     FULFILLED: 'FETCH_tinh_FULFILLED',
-    DELETE: 'FETCH_tinh_DELETE',
+    RESETED: 'FETCH_tinh_DELETE',
     REJECTED: 'FETCH_tinh_REJECTED',
     SELECTED: 'SELECTED_tinh'
 };
 const cosoyteActions = {
     PENDING: 'FETCH_cosoyte_PENDING',
     FULFILLED: 'FETCH_cosoyte_FULFILLED',
-    DELETE: 'FETCH_cosoyte_DELETE',
+    RESETED: 'FETCH_cosoyte_DELETE',
     REJECTED: 'FETCH_cosoyte_REJECTED',
     SELECTED: 'SELECTED_cosoyte'
 };
 const khoaActions = {
     PENDING: 'FETCH_khoa_PENDING',
     FULFILLED: 'FETCH_khoa_FULFILLED',
-    DELETE: 'FETCH_khoa_DELETE',
+    RESETED: 'FETCH_khoa_DELETE',
     REJECTED: 'FETCH_khoa_REJECTED',
     SELECTED: 'SELECTED_khoa'
 };
 const bacsiActions = {
     PENDING: 'FETCH_bacsi_PENDING',
     FULFILLED: 'FETCH_bacsi_FULFILLED',
-    DELETE: 'FETCH_bacsi_DELETE',
+    RESETED: 'FETCH_bacsi_DELETE',
     REJECTED: 'FETCH_bacsi_REJECTED',
     SELECTED: 'SELECTED_bacsi'
 };
@@ -67,11 +75,56 @@ const loaikhamActions = {
     SELECTED: 'SELECTED_loaikham',
 };
 
+const dangkykhamActions = {
+    PENDING: 'FETCH_dangkykham_PENDING',
+    SUCCESSFUL: 'SUCCESSFUL_dangkykham',
+    FAILED: 'FAILED_dangkykham',
+    RESETED: 'RESET_dangkykham'
+};
+
+//dang ky kham
+const postDangkykham = (tgdk,tgkham,noidungkham,loaikhamid,benhnhanid,bacsiid) => (dispatch) =>{
+    dispatch({type: dangkykhamActions.PENDING})
+    createDangkykham(tgdk,tgkham,noidungkham,loaikhamid,benhnhanid,bacsiid)
+        .then(json => {
+            if(json.status == 200){
+                console.log("200",json)
+                dispatch({type: dangkykhamActions.SUCCESSFUL})
+            }else{
+                console.log("404",json)
+                dispatch({type: dangkykhamActions.FAILED})
+            }
+        })
+}
+const resetDangkykham = () => (dispatch) =>{
+    dispatch({type:dangkykhamActions.RESETED})
+}
+
+const dangkykhamReducers = (state = initialState3, action) => {
+    switch (action.type) {
+        case dangkykhamActions.PENDING: {
+            return { ...state, loading: true };
+        }
+        case dangkykhamActions.SUCCESSFUL: {
+            return { ...state, loading :false, result: true};
+        }
+        case dangkykhamActions.FAILED: {
+            return { ...state, loading :false, result: false};
+        }
+        case dangkykhamActions.RESETED: {
+            return { ...state, loading :false, result: false};
+        }
+        default: {
+            return state;
+        }
+    }
+}
+
+
 //benh nhan
 const fetchBenhnhans = () => (dispatch) => {
     dispatch({ type: benhnhanActions.PENDING });
     return getQuanHeByBenhNhanId(1)
-        .then(response => response.json())
         .then(json => dispatch({ type: benhnhanActions.FULFILLED, payload: json }))
         .catch(error => dispatch({ type: benhnhanActions.REJECTED, payload: error }));
 };
@@ -89,7 +142,7 @@ const benhnhanReducers = (state = initialState, action) => {
             return { ...state, loading: false, data: action.payload };
         }
         case benhnhanActions.REJECTED: {
-            return { ...state, loading: false, error: 'Đã xảy ra lỗi trong quá trình fetch dữ liệu từ API' };
+            return { ...state, loading: false, error: action.payload };
         }
         case benhnhanActions.SELECTED: {
             return { ...state, selected: action.payload };
@@ -104,13 +157,12 @@ const benhnhanReducers = (state = initialState, action) => {
 const fetchTinhs = () => (dispatch) => {
     dispatch({ type: tinhActions.PENDING })
     return getAllTinh()
-        .then(response => response.json())
         .then(json => [{ "id": 0, "ten": '-- Chọn tỉnh --' }, ...json])
         .then(json => dispatch({ type: tinhActions.FULFILLED, payload: json }))
         .catch(error => dispatch({ type: tinhActions.REJECTED, payload: error }))
 }
 const deleteTinh = () => (dispatch) =>{
-    dispatch({type: tinhActions.DELETE})
+    dispatch({type: tinhActions.RESETED})
 }
 
 const selectTinh = (selected_tinh) => (dispatch) => {
@@ -125,11 +177,11 @@ const tinhReducers = (state = initialState, action) => {
         case tinhActions.FULFILLED: {
             return { ...state, loading: false, data: action.payload };
         }
-        case tinhActions.DELETE: {
+        case tinhActions.RESETED: {
             return { ...state, loading: false, data: [], selected: {} };
         }
         case tinhActions.REJECTED: {
-            return { ...state, loading: false, error: 'Đã xảy ra lỗi trong quá trình fetch dữ liệu từ API tỉnh' };
+            return { ...state, loading: false, error: action.payload };
         }
         case tinhActions.SELECTED: {
             return { ...state, selected: action.payload }
@@ -144,13 +196,12 @@ const tinhReducers = (state = initialState, action) => {
 const fetchCosoytes = (tinhid) => (dispatch) => {
     dispatch({ type: cosoyteActions.PENDING });
     return getCosoyteByTinhId(tinhid)
-        .then(response => response.json())
         .then((json) => [{ "id": 0, "ten": '-- Chọn bệnh viện--' }, ...json])
         .then(json => dispatch({ type: cosoyteActions.FULFILLED, payload: json }))
         .catch(error => dispatch({ type: cosoyteActions.REJECTED, payload: error }));
 }
 const deleteCosoyte = ()=> (dispatch) =>{
-    dispatch({ type: cosoyteActions.DELETE})
+    dispatch({ type: cosoyteActions.RESETED})
 }
 
 const selectCosoyte = (selected_cosoyte) => (dispatch) => {
@@ -166,11 +217,11 @@ const cosoyteReducers = (state = initialState, action) => {
         case cosoyteActions.FULFILLED: {
             return { ...state, loading: false, data: action.payload };
         }
-        case cosoyteActions.DELETE: {
+        case cosoyteActions.RESETED: {
             return { ...state, loading: false, data: [], selected: {} };
         }
         case cosoyteActions.REJECTED: {
-            return { ...state, loading: false, error: 'Đã xảy ra lỗi trong quá trình fetch dữ liệu từ API tỉnh' };
+            return { ...state, loading: false, error: action.payload};
         }
         case cosoyteActions.SELECTED: {
             return { ...state, selected: action.payload }
@@ -185,13 +236,12 @@ const cosoyteReducers = (state = initialState, action) => {
 const fetchKhoas = (cosoyteid) => (dispatch) => {
     dispatch({ type: khoaActions.PENDING });
     return getKhoaByCosoyteId(cosoyteid)
-        .then(response => response.json())
         .then((json) => [{ "id": 0, "ten": '-- Chọn khoa khám bệnh --' }, ...json])
         .then(json => dispatch({ type: khoaActions.FULFILLED, payload: json }))
         .catch(error => dispatch({ type: khoaActions.REJECTED, payload: error }));
 }
 const deleteKhoa = () => (dispatch) =>{
-    dispatch({type: khoaActions.DELETE})
+    dispatch({type: khoaActions.RESETED})
 }
 const selectKhoa = (selected_khoa) => (dispatch) => {
     dispatch({ type: khoaActions.SELECTED, payload: selected_khoa })
@@ -205,11 +255,11 @@ const khoaReducers = (state = initialState, action) => {
         case khoaActions.FULFILLED: {
             return { ...state, loading: false, data: action.payload };
         }
-        case khoaActions.DELETE: {
+        case khoaActions.RESETED: {
             return { ...state, loading: false, data: [], selected: {} };
         }
         case khoaActions.REJECTED: {
-            return { ...state, loading: false, error: 'Đã xảy ra lỗi trong quá trình fetch dữ liệu từ API khoa' };
+            return { ...state, loading: false, error: action.payload };
         }
         case khoaActions.SELECTED: {
             return { ...state, selected: action.payload }
@@ -224,13 +274,13 @@ const khoaReducers = (state = initialState, action) => {
 const fetchBacsis = (khoaid) => (dispatch) => {
     dispatch({ type: bacsiActions.PENDING });
     return getBacSiByKhoaId(khoaid)
-        .then(response => response.json())
+        
         .then((json) => [{ "id": 0, "ten": '-- Chọn bác sĩ --' }, ...json])
         .then(json => dispatch({ type: bacsiActions.FULFILLED, payload: json }))
         .catch(error => dispatch({ type: bacsiActions.REJECTED, payload: error }));
 };
 const deleteBacsi = () => (dispatch) =>{
-    dispatch({type: bacsiActions.DELETE})
+    dispatch({type: bacsiActions.RESETED})
 }
 const selectBacsi = (selected_bacsi) => (dispatch) => {
     dispatch({ type: bacsiActions.SELECTED, payload: selected_bacsi })
@@ -245,11 +295,11 @@ const bacsiReducers = (state = initialState, action) => {
         case bacsiActions.FULFILLED: {
             return { ...state, loading: false, data: action.payload };
         }
-        case bacsiActions.DELETE: {
+        case bacsiActions.RESETED: {
             return { ...state, loading: false, data: [], selected: {} };
         }
         case bacsiActions.REJECTED: {
-            return { ...state, loading: false, error: 'Đã xảy ra lỗi trong quá trình fetch dữ liệu từ API bác sĩ' };
+            return { ...state, loading: false, error: action.payload };
         }
         case bacsiActions.SELECTED: {
             return { ...state, selected: action.payload }
@@ -297,7 +347,6 @@ const thoigiankhamReducers = (state = initialState2, action) => {
 
 //loai kham
 const selectLoaikham = (loaikham) => (dispatch) => {
-    console.log(loaikham)
     dispatch({ type: loaikhamActions.SELECTED, payload: loaikham })
 }
 
@@ -321,10 +370,13 @@ export{
     bacsiReducers,
     thoigiankhamReducers,
     loaikhamReducers,
-    noidungkhamReducers
+    noidungkhamReducers,
+    dangkykhamReducers
 };
 
 export {
+    postDangkykham,
+    resetDangkykham,
     fetchBenhnhans,
     selectBenhnhan,
     fetchTinhs,
