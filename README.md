@@ -34,4 +34,4 @@ Open Expo Client on your device. Scan the QR code printed by ```expo start``` wi
 
 **4. Step 4: To be continued...**
 
-Viết tý cho vui thôi. Thằng nào có hứng và thấy thiếu thì viết tiếp nhé.
+To be continued....
