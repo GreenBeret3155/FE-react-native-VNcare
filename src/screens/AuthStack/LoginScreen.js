@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Alert, Button, Linking, CheckBox, Image, StyleSheet, Text, View, TouchableOpacity, Modal, ScrollView, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { Alert,
+    Button, 
+    Linking, 
+    CheckBox, 
+    Image, 
+    StyleSheet, 
+    Text, 
+    View, 
+    TouchableOpacity, 
+    Modal, 
+    ScrollView, 
+    KeyboardAvoidingView, 
+    ActivityIndicator 
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Loading, MyTextInput } from '../../components'
 import { TextInput } from 'react-native-gesture-handler'
 import { firebase } from '../../firebase/config';
 import { Octicons } from '@expo/vector-icons';
