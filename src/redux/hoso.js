@@ -2,6 +2,11 @@ import {
     getAllHoso
 } from '../services/fetchGET'
 
+import{
+    hosoActions,
+    hoso2Actions
+} from './actions'
+
 function handlerData(json,success,fail){
     if(Array.isArray(json)){
         if(json[0].status === 200){
@@ -24,20 +29,6 @@ const initialState = {
     loading: false,
     error: null,
 };
-
-const hosoActions = {
-    PENDING: 'FETCH_hoso_PENDING',
-    FULFILLED: 'FETCH_hoso_FULFILLED',
-    REJECTED: 'FETCH_hoso_REJECTED',
-    SELECTED: 'SELECTED_hoso',
-}; 
-
-const hoso2Actions = {
-    PENDING: 'FETCH_hoso2_PENDING',
-    FULFILLED: 'FETCH_hoso2_FULFILLED',
-    REJECTED: 'FETCH_hoso2_REJECTED',
-    SELECTED: 'SELECTED2_hoso',
-}; 
 
 //ho so
 // const fetchHosos = (thoigiandkbegin,thoigiandkend,thoigiankhambegin,thoigiankhamend,trangthaikham,benhnhanid) => (dispatch) => {
