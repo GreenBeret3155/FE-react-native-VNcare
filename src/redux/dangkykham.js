@@ -7,6 +7,17 @@ import {
 } from '../services/fetchGET'
 import{ createDangkykham } from '../services/fetchPOST'
 import { loaiKham } from '../services/mockedData';
+import {
+    dangkykhamActions,
+    benhnhanActions,
+    tinhActions,
+    cosoyteActions,
+    khoaActions,
+    bacsiActions,
+    noidungkhamActions,
+    thoigiankhamActions,
+    loaikhamActions
+} from './actions'
 
 // initialState
 const initialState = {
@@ -27,60 +38,6 @@ const initialState3 = {
     loading: false,
 }
 
-const tinhActions = {
-    PENDING: 'FETCH_tinh_PENDING',
-    FULFILLED: 'FETCH_tinh_FULFILLED',
-    RESETED: 'FETCH_tinh_DELETE',
-    REJECTED: 'FETCH_tinh_REJECTED',
-    SELECTED: 'SELECTED_tinh'
-};
-const cosoyteActions = {
-    PENDING: 'FETCH_cosoyte_PENDING',
-    FULFILLED: 'FETCH_cosoyte_FULFILLED',
-    RESETED: 'FETCH_cosoyte_DELETE',
-    REJECTED: 'FETCH_cosoyte_REJECTED',
-    SELECTED: 'SELECTED_cosoyte'
-};
-const khoaActions = {
-    PENDING: 'FETCH_khoa_PENDING',
-    FULFILLED: 'FETCH_khoa_FULFILLED',
-    RESETED: 'FETCH_khoa_DELETE',
-    REJECTED: 'FETCH_khoa_REJECTED',
-    SELECTED: 'SELECTED_khoa'
-};
-const bacsiActions = {
-    PENDING: 'FETCH_bacsi_PENDING',
-    FULFILLED: 'FETCH_bacsi_FULFILLED',
-    RESETED: 'FETCH_bacsi_DELETE',
-    REJECTED: 'FETCH_bacsi_REJECTED',
-    SELECTED: 'SELECTED_bacsi'
-};
-
-const benhnhanActions = {
-    PENDING: 'FETCH_benhnhan_PENDING',
-    FULFILLED: 'FETCH_benhnhan_FULFILLED',
-    REJECTED: 'FETCH_benhnhan_REJECTED',
-    SELECTED: 'SELECTED_benhnhan',
-};
-
-const thoigiankhamActions = {
-    SELECTED: 'SELECTED_ngaykham',
-};
-
-const noidungkhamActions = {
-    SELECTED: 'SELECTED_noidungkham',
-};
-
-const loaikhamActions = {
-    SELECTED: 'SELECTED_loaikham',
-};
-
-const dangkykhamActions = {
-    PENDING: 'FETCH_dangkykham_PENDING',
-    SUCCESSFUL: 'SUCCESSFUL_dangkykham',
-    FAILED: 'FAILED_dangkykham',
-    RESETED: 'RESET_dangkykham'
-};
 
 //dang ky kham
 const postDangkykham = (tgdk,tgkham,noidungkham,loaikhamid,benhnhanid,bacsiid) => (dispatch) =>{

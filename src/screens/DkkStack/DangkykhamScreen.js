@@ -5,9 +5,11 @@ import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Theme } from '../../utils/theme'
 import { chuyenLoaiQuanHe } from '../../services/xuly'
+import { handleUploadPhoto } from '../../services/fetchPOST'
+
+//redux
 import { connect } from 'react-redux'
 import { fetchBenhnhans, selectBenhnhan } from '../../redux/dangkykham'
-import { handleUploadPhoto } from '../../services/fetchPOST'
 
 const DangkykhamScreen = (props) => {
     const refRBSheet = useRef();
@@ -35,7 +37,6 @@ const DangkykhamScreen = (props) => {
 
     useEffect(() => {
         if (image) {
-            console.log("start post")
             handleUploadPhoto(image)
         }
     }, [image])

@@ -1,4 +1,5 @@
 export { default as LoginScreen } from './AuthStack/LoginScreen'
+export { default as SigninScreen } from './AuthStack/SigninScreen'
 export { default as RegistryScreen } from './AuthStack/RegistryScreen'
 export { default as SuccessScreen } from './AuthStack/SuccessScreen'
 export { default as QmkScreen } from './AuthStack/QmkScreen'
@@ -9,4 +10,5 @@ export { default as DangkykhamScreen } from './DkkStack/DangkykhamScreen'
 export { default as ThongtindangkykhamScreen } from './DkkStack/ThongtindangkykhamScreen'
 export { default as KiemtrathongtinScreen } from './DkkStack/KiemtrathongtinScreen'
 export { default as SettingsScreen } from './SettingsStack/SettingsScreen'
+export { default as AuthLoadingScreen} from './SharedScreens/AuthLoadingScreen'
 

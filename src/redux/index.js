@@ -9,10 +9,15 @@ import { benhnhanReducers,
     thoigiankhamReducers,
     dangkykhamReducers
 } from './dangkykham'
+
 import {
     hosoReducers,
     hoso2Reducers
 } from './hoso'
+
+import{ signinReducers } from './auth'
+
+import { gvReducers } from './global_variables'
 
 // Root Reducer
 const rootReducer = combineReducers({
@@ -26,7 +31,9 @@ const rootReducer = combineReducers({
     loaikham: loaikhamReducers,
     dangkykham: dangkykhamReducers,
     hoso: hosoReducers,
-    hoso2: hoso2Reducers
+    hoso2: hoso2Reducers,
+    signin: signinReducers,
+    global: gvReducers,
 });
 
 export default rootReducer;
