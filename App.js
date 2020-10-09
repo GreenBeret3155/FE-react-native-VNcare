@@ -81,9 +81,9 @@ const DangkykhamTab = ({ navigation }) => {
     const resetAction = () => CommonActions.reset({
         index: 0,
         routes: [
-          { name: 'DangkykhamScreen' }
+            { name: 'DangkykhamScreen' }
         ],
-      })
+    })
     return (
         <DKKStack.Navigator initialRouteName='DangkykhamScreen'
             screenOptions={{
@@ -119,7 +119,7 @@ const DangkykhamTab = ({ navigation }) => {
                     title: 'Thêm lịch khám',
                     headerRight: () => {
                         return (
-                            <CancelButton resetAction = {resetAction} navigation = {navigation} />
+                            <CancelButton resetAction={resetAction} navigation={navigation} />
                         )
                     }
                 }} />
@@ -129,7 +129,7 @@ const DangkykhamTab = ({ navigation }) => {
                     title: 'Thông tin đăng ký khám',
                     headerRight: () => {
                         return (
-                            <CancelButton resetAction = {resetAction} navigation = {navigation} />
+                            <CancelButton resetAction={resetAction} navigation={navigation} />
                         )
                     }
                 }} />
@@ -139,7 +139,7 @@ const DangkykhamTab = ({ navigation }) => {
                     title: 'Thông tin bệnh nhân',
                     headerRight: () => {
                         return (
-                            <CancelButton resetAction = {resetAction} navigation = {navigation} />
+                            <CancelButton resetAction={resetAction} navigation={navigation} />
                         )
                     }
                 }} />
@@ -159,7 +159,7 @@ const HosoTab = () => {
                     title: 'Hồ sơ sức khỏe',
                     headerStyle: {
                         backgroundColor: Theme.colors.primary,
-                        height:120,
+                        height: 120,
                         elevation: 0,
                     },
                     headerTitleAlign: 'center',
@@ -297,72 +297,75 @@ function App() {
 
     return (
         <Provider store={store}>
-            <NavigationContainer>
-                <RootStack.Navigator>
-                    {loggedIn ? (
-                        <RootStack.Screen
-                            name="Main"
-                            options={{ headerShown: false }}
-                            component={MainStackScreen}
-                        />
-                        // {/* {props => <MainStackScreen {...props} user={user} />} */}
-                        // {/* </RootStack.Screen> */}
+            <>
+                <StatusBar hidden={true} />
+                <NavigationContainer>
+                    <RootStack.Navigator>
+                        {loggedIn ? (
+                            <RootStack.Screen
+                                name="Main"
+                                options={{ headerShown: false }}
+                                component={MainStackScreen}
+                            />
+                            // {/* {props => <MainStackScreen {...props} user={user} />} */}
+                            // {/* </RootStack.Screen> */}
 
-                    ) : (
-                            <>
-                                <RootStack.Screen name="Login"
-                                    component={LoginScreen}
-                                    options={{
-                                        title: 'Login page',
-                                        headerShown: false,
-                                    }}
-                                />
-                                <RootStack.Screen name="Registry"
-                                    component={RegistryScreen}
-                                    options={{
-                                        title: 'Thông tin tài khoản',
-                                        headerStyle: {
-                                            backgroundColor: '#fff',
-                                            height: 150,
-                                            elevation: 0,
-                                        },
-                                        headerTitleAlign: 'center',
-                                        headerTitleStyle: {
-                                            fontWeight: '600',
-                                            color: '#000',
-                                        },
-                                        headerBackImage: () => {
-                                            return (
-                                                <AntDesign
-                                                    name="left"
-                                                    size={20}
-                                                    color="#000"
-                                                    style={{ paddingLeft: 10 }}
-                                                />)
-                                        },
-                                    }}
-                                />
-                                <RootStack.Screen name="SuccessScreen"
-                                    component={SuccessScreen}
-                                    options={{
-                                        headerShown: false,
-                                        headerStyle: {
-                                            backgroundColor: Theme.colors.primary,
-                                            elevation: 0,
-                                        },
-                                    }}
-                                />
-                                <RootStack.Screen name="QmkScreen"
-                                    component={QmkScreen}
-                                    options={{
-                                        title: 'Quên mật khẩu'
-                                    }}
-                                />
-                            </>
-                        )}
+                        ) : (
+                                <>
+                                    <RootStack.Screen name="Login"
+                                        component={LoginScreen}
+                                        options={{
+                                            title: 'Login page',
+                                            headerShown: false,
+                                        }}
+                                    />
+                                    <RootStack.Screen name="Registry"
+                                        component={RegistryScreen}
+                                        options={{
+                                            title: 'Thông tin tài khoản',
+                                            headerStyle: {
+                                                backgroundColor: '#fff',
+                                                height: 150,
+                                                elevation: 0,
+                                            },
+                                            headerTitleAlign: 'center',
+                                            headerTitleStyle: {
+                                                fontWeight: '600',
+                                                color: '#000',
+                                            },
+                                            headerBackImage: () => {
+                                                return (
+                                                    <AntDesign
+                                                        name="left"
+                                                        size={20}
+                                                        color="#000"
+                                                        style={{ paddingLeft: 10 }}
+                                                    />)
+                                            },
+                                        }}
+                                    />
+                                    <RootStack.Screen name="SuccessScreen"
+                                        component={SuccessScreen}
+                                        options={{
+                                            headerShown: false,
+                                            headerStyle: {
+                                                backgroundColor: Theme.colors.primary,
+                                                elevation: 0,
+                                            },
+                                        }}
+                                    />
+                                    <RootStack.Screen name="QmkScreen"
+                                        component={QmkScreen}
+                                        options={{
+                                            title: 'Quên mật khẩu'
+                                        }}
+                                    />
+                                </>
+                            )}
 
-                </RootStack.Navigator>
-            </NavigationContainer>
+                    </RootStack.Navigator>
+                </NavigationContainer>
+            </>
         </Provider>
     )
 }
