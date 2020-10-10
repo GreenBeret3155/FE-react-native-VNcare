@@ -40,19 +40,19 @@ function SigninScreen(props) {
     const [hide, setHide] = useState(true);
     const [b1, setB1] = useState(false);
     const [b2, setB2] = useState(false);
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [checkbox, setCheckbox] = useState(true);
 
     const onLogin = () => {
-        props.signinHandler(email,password)
+        props.signinHandler(username,password)
     }
 
 
     const onLoginSuccess = () => {
-        setEmail('')
+        setUsername('')
         setPassword('')
         setError('')
         setLoading(false)
@@ -102,13 +102,12 @@ function SigninScreen(props) {
                         {borderColor: b1 ? Theme.colors.primary : 'gray' , borderBottomWidth: b1 ?  2  : 0.5 }
                         ]}>
                         <TextInput style={{ fontSize: 16, width: 350 }}
-                            value={email}
-                            onChangeText={text => setEmail(text)}
+                            value={username}
+                            onChangeText={text => setUsername(text)}
                             placeholder='user@gmail.com'
                             placeholderTextColor='gray'
                             underlineColorAndroid="transparent"
                             autoCapitalize="none"
-                            autoCompleteType="email"
                             textContentType="emailAddress"
                             keyboardType="email-address"
                             onFocus={() => setB1(true)}

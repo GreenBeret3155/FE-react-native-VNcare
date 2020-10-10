@@ -1,10 +1,10 @@
 import { signInHandler } from '../services/authHandler'
 import {
-    signinActions
+    signinActions,
+    gvActions
 } from './actions'
 
 const initialState = {
-    userToken: null,
     loading: false,
 };
 
@@ -15,7 +15,8 @@ const signinHandler = (username,password) => async (dispatch) => {
             if (typeof json.error != "undefined") {
                 console.log('Error', json.error_description);
             } else {
-                dispatch({type: signinActions.SUCCESSFUL, payload: json })
+                dispatch({type: signinActions.SUCCESSFUL})
+                dispatch({type: gvActions.SUCCESSFUL_USERTOKEN, payload: json.access_token })
             }
         })
 }
@@ -26,7 +27,7 @@ const signinReducers = (state = initialState, action) => {
             return { ...state, loading: true };
         }
         case signinActions.SUCCESSFUL: {
-            return { ...state, loading :false , userToken: action.payload.access_token };
+            return { ...state, loading: false};
         }
         default: {
             return state;
