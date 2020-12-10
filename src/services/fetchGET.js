@@ -73,7 +73,7 @@ export const getBenhNhanByBenhnhanId = (benhnhanid) => {
 }
 
 export const getAllTinh = () => {
-    const URL = `${globalUrl}/api/tinh/search`
+    const URL = `${globalUrl}/api/tinh/search?`
     return fetchGET(URL)
 }
 
