@@ -56,6 +56,7 @@ export const dangkykhamActions = {
 export const gvActions = {
     PENDING: 'FETCH_gv_PENDING',
     SUCCESSFUL_USERTOKEN: 'SUCCESSFUL_gv_ut',
+    REJECTED_USERTOKEN: 'REJECTED_gv_ut'
 }
 
 export const hosoActions = {

@@ -1,3 +1,3 @@
 export default {
-    globalUrl : 'http://cddb1254e213.ngrok.io'
+    globalUrl : 'http://c7f6d0b61245.ngrok.io'
 } ;

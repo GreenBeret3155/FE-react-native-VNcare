@@ -23,18 +23,17 @@ import {
     KiemtrathongtinScreen,
     AuthLoadingScreen,
     SigninScreen
-} from './src/screens'
-import CancelButton from './src/components/CancelButton'
-import { Loading } from './src/components';
+} from './screens'
+import CancelButton from './components/CancelButton'
+import { Loading } from './components';
 import { AntDesign } from '@expo/vector-icons';
-import { firebase } from './src/firebase/config';
 
 //theme
-import { Theme } from './src/utils/theme'
+import { Theme } from './utils/theme'
 
 //redux
 import { connect } from 'react-redux'
-import { gvActions } from './src/redux/actions'
+import { gvActions } from './redux/actions'
 
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
@@ -267,7 +266,7 @@ const MainStackScreen = () => {
     )
 }
 
-function Hung(props) {
+function RootComp(props) {
 
     useEffect(() => {
         props.dispatch({ type: gvActions.PENDING });
@@ -305,7 +304,7 @@ function Hung(props) {
             <StatusBar hidden={true} />
             <NavigationContainer>
                 <RootStack.Navigator >
-                    {props.userToken == null ? (
+                    {(props.userToken == null || props.userToken == 'a-way-out') ? (
                         <>
                             <RootStack.Screen name="Login"
                                 component={SigninScreen}
@@ -375,4 +374,4 @@ const mapStateToProps = state => ({
     loading: state.global.loading
 })
 
-export default connect(mapStateToProps)(Hung);
+export default connect(mapStateToProps)(RootComp);

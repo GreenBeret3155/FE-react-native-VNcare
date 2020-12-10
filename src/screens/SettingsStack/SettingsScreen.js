@@ -1,24 +1,35 @@
 import React from 'react'
-import { View, Text, StyleSheet, Button } from 'react-native'
-import { firebase } from '../../firebase/config'
+import { View, 
+    Text, 
+    StyleSheet, 
+    Button,
+    AsyncStorage 
+} from 'react-native'
 
-const SettingsScreen = () => {
-    var user = firebase.auth().currentUser;
-    var str = `~~~~~ FIREBASE USER INFO ~~~~~\n\n`
-    if (user != null) {
-        user.providerData.forEach(function (profile) {
-            str += "\n Sign-in provider: " + profile.providerId;
-            str += "\n Provider-specific UID: " + profile.uid;
-            str += "\n Name: " + profile.displayName;
-            str += "\n Email: " + profile.email;
-            str += "\n Photo URL: " + profile.photoURL;
-        });
+//redux
+import { connect } from 'react-redux'
+import { gvActions} from '../../redux/global_variables'
+
+const SettingsScreen = (props) => {
+
+    const signOut = async () =>{
+        try {
+            // big big problem : cant pass a item in AsyncStorage a null value ??
+
+            await AsyncStorage.setItem('userToken', 'a-way-out' )
+        } catch(e) {
+            //handle it !
+
+            console.log(e)
+        }
+        await props.dispatch({type: gvActions.REJECTED_USERTOKEN })
     }
+
     return (
         <View style={styles.container}>
-            <Text style={styles.container} >{str}</Text>
+            <Text> SETTINGS </Text>
             <Button
-                onPress={() => firebase.auth().signOut()}
+                onPress={() => signOut()}
                 title="log out"
             />
         </View>
@@ -33,4 +44,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SettingsScreen;
+const mapStateToProps = state => ({
+
+})
+
+export default connect(mapStateToProps) (SettingsScreen);

@@ -14,6 +14,9 @@ const gvReducers = (state = initialVariables, action) =>{
         case gvActions.SUCCESSFUL_USERTOKEN: {
             return { ...state, loading :false, userToken: action.payload };
         }
+        case gvActions.REJECTED_USERTOKEN: {
+            return { ...state, userToken: null };
+        }
         default: {
             return state;
         }
